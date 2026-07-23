@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Demographics</title>
+  {% include 'base_style.html' %}
+</head>
+<body>
+<div class="card">
+  <div class="progress-bar">
+    <div class="seg done"></div><div class="seg done"></div><div class="seg done"></div>
+    <div class="seg done"></div><div class="seg done"></div>
+    <div class="seg active"></div>
+  </div>
+
+  <div class="eyebrow">Final Step — About You</div>
+  <h1>A few last questions</h1>
+  <p style="margin-bottom:24px;">These questions are for statistical purposes only and cannot be linked to your other responses.</p>
+
+  <form action="/demographics" method="POST">
+
+    <label class="field-label">Age</label>
+    <input type="number" name="age" min="18" max="99" placeholder="e.g. 24" required>
+
+    <label class="field-label">Gender</label>
+    <select name="gender" required>
+      <option value="" disabled selected>Select…</option>
+      <option value="female">Female</option>
+      <option value="male">Male</option>
+      <option value="non-binary">Non-binary / third gender</option>
+      <option value="prefer_not">Prefer not to say</option>
+    </select>
+
+    <label class="field-label">How often do you use recommender systems (e.g. Netflix, Spotify, recipe apps)?</label>
+    <select name="recommender_experience" required>
+      <option value="" disabled selected>Select…</option>
+      <option value="daily">Daily</option>
+      <option value="weekly">Several times a week</option>
+      <option value="monthly">A few times a month</option>
+      <option value="rarely">Rarely or never</option>
+    </select>
+
+    <hr>
+    <button class="btn btn-primary" type="submit">Finish →</button>
+  </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Informed Consent</title>
+  {% include 'base_style.html' %}
+</head>
+<body>
+<div class="card">
+  <div class="progress-bar">
+    <div class="seg active"></div>
+    <div class="seg"></div><div class="seg"></div>
+    <div class="seg"></div><div class="seg"></div><div class="seg"></div>
+  </div>
+
+  <div class="eyebrow">University of Regensburg</div>
+  <h1>Informed Consent</h1>
+
+  <p>This study investigates how different recommendation approaches affect your experience with a group food recommender system. It is conducted as part of a bachelor's thesis at the University of Regensburg.</p>
+
+  <div class="infobox">
+    <strong>What will happen:</strong> You will chat with a recommender system, receive recipe suggestions for a virtual group, and answer a short questionnaire — three times in a row. The whole session takes approximately <strong>10–15 minutes</strong>.
+  </div>
+
+  <p>Your participation is <strong>voluntary and fully anonymous</strong>. No personal data beyond age and gender is collected. You may close the browser at any time without consequence. Data is used solely for research purposes.</p>
+
+  <p style="margin-top:10px;">If you have questions, contact: <strong>Maximilian.Schnabel@stud.uni-regensburg.de</strong></p>
+
+  <hr>
+
+  <form action="/dialogue" method="get">
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:24px;">
+      <input type="checkbox" id="cb" required style="width:18px;height:18px;margin-top:3px;flex-shrink:0;accent-color:var(--accent);">
+      <label for="cb" style="font-size:14px;color:var(--ink);line-height:1.6;cursor:pointer;">
+        I have read and understood the above information. I voluntarily agree to participate and consent to the anonymous use of my data for research purposes.
+      </label>
+    </div>
+    <button class="btn btn-primary" type="submit">I agree — Begin →</button>
+  </form>
+</div>
+</body>
+</html>

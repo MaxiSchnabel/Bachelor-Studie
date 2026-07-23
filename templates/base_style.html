@@ -1,0 +1,233 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #F7F5F0;
+    --surface:  #FFFFFF;
+    --ink:      #1A1A18;
+    --muted:    #6B6B60;
+    --border:   #E2DED6;
+    --accent:   #2D6A4F;
+    --accent2:  #52B788;
+    --warn:     #C77D2A;
+    --radius:   10px;
+    --shadow:   0 2px 16px rgba(26,26,24,0.07);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 48px;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .card-wide { max-width: 720px; }
+
+  /* Progress */
+  .progress-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 32px;
+  }
+  .progress-bar .seg {
+    height: 3px;
+    flex: 1;
+    background: var(--border);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .progress-bar .seg.done { background: var(--accent); }
+  .progress-bar .seg.active { background: var(--accent2); }
+
+  /* Typography */
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  p { color: var(--muted); font-size: 15px; line-height: 1.7; }
+  p + p { margin-top: 10px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-block;
+    padding: 13px 28px;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: opacity 0.18s, transform 0.15s;
+    text-align: center;
+  }
+  .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #fff; width: 100%; display: block; }
+  .btn-secondary { background: var(--border); color: var(--ink); }
+
+  /* Form elements */
+  label.field-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 6px;
+    margin-top: 20px;
+  }
+  select, input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus { border-color: var(--accent); }
+
+  /* Likert scale */
+  .likert-group { margin-bottom: 24px; }
+  .likert-label { font-size: 14px; color: var(--ink); margin-bottom: 10px; line-height: 1.5; }
+  .likert-scale {
+    display: flex;
+    gap: 8px;
+  }
+  .likert-scale label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .likert-scale input[type="radio"] { display: none; }
+  .likert-scale .circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .likert-scale input[type="radio"]:checked + .circle {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .likert-endpoints {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* Info box */
+  .infobox {
+    background: #EAF4EE;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 20px 0;
+  }
+
+  /* Recipe card */
+  .recipe-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .recipe-card.top { border-color: var(--accent); background: #F0FAF4; }
+  .recipe-rank { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .recipe-card.top .recipe-rank { color: var(--accent); }
+  .recipe-name { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 5px; }
+  .recipe-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .tag.vegan, .tag.vegetarian { background: #E8F5E9; color: #2D6A4F; border-color: #B7DFC3; }
+  .tag.spicy { background: #FEF0E8; color: #C77D2A; border-color: #F5CFA8; }
+
+  /* Persona card */
+  .persona-card {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+  .persona-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent2);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .persona-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 15px; margin-bottom: 3px; }
+  .persona-desc { font-size: 13px; color: var(--muted); }
+</style>

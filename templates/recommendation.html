@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Recommendations – Round {{ round_num }}</title>
+  {% include 'base_style.html' %}
+</head>
+<body>
+<div class="card card-wide">
+  <div class="progress-bar">
+    <div class="seg done"></div><div class="seg done"></div><div class="seg done"></div>
+    <div class="seg active"></div>
+    <div class="seg"></div><div class="seg"></div>
+  </div>
+
+  <div class="eyebrow">Round {{ round_num }} of 3 — Recommendations</div>
+  <h1>Recipes for your group</h1>
+  <p style="margin-bottom:24px;">Based on everyone's preferences, the system suggests the following recipes.</p>
+
+  {% for recipe in recipes %}
+  <div class="recipe-card {% if loop.index == 1 %}top{% endif %}">
+    <div class="recipe-rank">{% if loop.index == 1 %}Top Match{% else %}Alternative {{ loop.index }}{% endif %}</div>
+    <div class="recipe-name">{{ recipe.name }}</div>
+    <div class="recipe-desc">{{ recipe.description }}</div>
+    <div class="tags">
+      <span class="tag {% if recipe.dietary in ['vegan','vegetarian'] %}{{ recipe.dietary }}{% endif %}">{{ recipe.dietary }}</span>
+      <span class="tag">{{ recipe.cuisine }}</span>
+      <span class="tag {% if recipe.spice_level >= 4 %}spicy{% endif %}">🌶 {{ recipe.spice_level }}/5</span>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="infobox" style="margin-top:24px;">
+    <strong>Please fill in the questionnaire now</strong> before continuing to the next round.
+  </div>
+
+  <a href="/questionnaire" class="btn btn-primary" style="margin-top:8px;">Go to questionnaire →</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Your Preferences</title>
+  {% include 'base_style.html' %}
+  <style>
+    .chat-window {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      min-height: 220px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+    .bubble {
+      max-width: 82%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .bubble.bot {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .bubble.user {
+      background: var(--accent);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .typing {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+      width: fit-content;
+    }
+    .typing span {
+      width: 7px; height: 7px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+    .options-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+      min-height: 40px;
+    }
+    .opt-btn {
+      padding: 9px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .opt-btn:hover {
+      border-color: var(--accent);
+      background: #EAF4EE;
+      color: var(--accent);
+    }
+    .opt-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    #next-btn { display: none; margin-top: 16px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="progress-bar">
+    <div class="seg done"></div>
+    <div class="seg active"></div>
+    <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+  </div>
+
+  <div class="eyebrow">Preference Elicitation</div>
+  <h1>Your food preferences</h1>
+  <p style="margin-bottom:20px;">
+    Please answer the following questions about your food preferences. Your answers will be used to generate personalised group recommendations.
+  </p>
+
+  <div class="chat-window" id="chat"></div>
+  <div class="options-grid" id="options"></div>
+  <a href="/personas" class="btn btn-primary" id="next-btn">Continue →</a>
+</div>
+
+<script>
+const STEPS = {
+  dietary: {
+    slot: "dietary",
+    question: "Do you follow a particular dietary lifestyle?",
+    options: ["Omnivore — I eat everything", "Vegetarian", "Vegan"],
+    values:  ["omnivore", "vegetarian", "vegan"],
+    next: "cuisine"
+  },
+  cuisine: {
+    slot: "cuisine",
+    question: "Which type of cuisine do you prefer?",
+    options: ["Asian", "Italian", "Mexican", "Indian", "Mediterranean", "American", "No preference"],
+    values:  ["asian", "italian", "mexican", "indian", "mediterranean", "american", "any"],
+    next: "spice"
+  },
+  spice: {
+    slot: "spice_level",
+    question: "How spicy do you like your food?",
+    options: ["Mild 🌿", "Medium 🌶", "Hot 🔥"],
+    values:  ["mild", "medium", "hot"],
+    next: "done"
+  }
+};
+
+let currentStep = "dietary";
+
+function addBubble(text, cls) {
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.className = "bubble " + cls;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function showTyping() {
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.className = "typing";
+  div.id = "typing-indicator";
+  div.innerHTML = "<span></span><span></span><span></span>";
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById("typing-indicator");
+  if (el) el.remove();
+}
+
+function showOptions(step) {
+  const s = STEPS[step];
+  const container = document.getElementById("options");
+  container.innerHTML = "";
+  s.options.forEach((label, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
+    btn.textContent = label;
+    btn.onclick = () => choose(step, label, s.values[i]);
+    container.appendChild(btn);
+  });
+}
+
+function disableOptions() {
+  document.querySelectorAll(".opt-btn").forEach(b => b.disabled = true);
+}
+
+function choose(step, label, value) {
+  disableOptions();
+  addBubble(label, "user");
+  document.getElementById("options").innerHTML = "";
+
+  fetch("/api/chat", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({step: step, answer: value})
+  })
+  .then(r => r.json())
+  .then(data => {
+    showTyping();
+    setTimeout(() => {
+      removeTyping();
+      if (data.done) {
+        addBubble("Thank you! I now have all the information I need to generate recommendations for your group.", "bot");
+        document.getElementById("next-btn").style.display = "block";
+      } else {
+        addBubble(STEPS[data.next_step].question, "bot");
+        currentStep = data.next_step;
+        showOptions(currentStep);
+      }
+    }, 700);
+  });
+}
+
+window.onload = () => {
+  showTyping();
+  setTimeout(() => {
+    removeTyping();
+    addBubble("Hello! I am a conversational food recommender system. I will ask you a few questions about your food preferences to generate a personalised group recommendation.", "bot");
+    setTimeout(() => {
+      showTyping();
+      setTimeout(() => {
+        removeTyping();
+        addBubble(STEPS["dietary"].question, "bot");
+        showOptions("dietary");
+      }, 700);
+    }, 400);
+  }, 800);
+};
+</script>
+</body>
+</html>

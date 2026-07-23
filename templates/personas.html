@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Your Virtual Group</title>
+  {% include 'base_style.html' %}
+</head>
+<body>
+<div class="card">
+  <div class="progress-bar">
+    <div class="seg done"></div><div class="seg done"></div>
+    <div class="seg active"></div>
+    <div class="seg"></div><div class="seg"></div><div class="seg"></div>
+  </div>
+
+  <div class="eyebrow">Step 2 — Your Group</div>
+  <h1>Meet your virtual group</h1>
+  <p style="margin-bottom:24px;">
+    Imagine you are planning a meal together with two other people. The system will recommend recipes that take <em>everyone's</em> preferences into account, including yours.
+  </p>
+
+  {% for p in personas %}
+  <div class="persona-card">
+    <div class="persona-avatar">{{ p.name[0] }}</div>
+    <div>
+      <div class="persona-name">{{ p.name }}</div>
+      <div class="persona-desc">{{ p.description }}</div>
+      <div class="tags" style="margin-top:8px;">
+        <span class="tag {% if p.dietary in ['vegan','vegetarian'] %}{{ p.dietary }}{% endif %}">{{ p.dietary }}</span>
+        <span class="tag">{{ p.cuisine }}</span>
+        <span class="tag {% if p.spice_level == 'hot' %}spicy{% endif %}">{{ p.spice_level }} spice</span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="infobox">
+    The system will now generate recipe recommendations for your group. You will go through this process <strong>three times</strong>, each time receiving a new set of recommendations.
+  </div>
+
+  <a href="/recommend" class="btn btn-primary">Get first recommendation →</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Admin Dashboard</title>
+  {% include 'base_style.html' %}
+  <style>
+    :root {
+      --bg: #0F1117; --surface: #1A1D27; --border: #2A2D3A;
+      --ink: #E8EAF0; --muted: #6B7280; --accent: #F0C040; --accent2: #F0C040;
+    }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+    .stat-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+    .order-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 16px; }
+    .order-table th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .order-table td { padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--ink); }
+    .error { color: #F87171; font-size: 14px; margin-bottom: 12px; }
+    a.logout { font-size: 13px; color: var(--muted); text-decoration: none; display: block; margin-top: 16px; text-align: center; }
+    a.logout:hover { color: var(--ink); }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="eyebrow">Admin Dashboard</div>
+  <h1>Study Overview</h1>
+
+  {% if not stats %}
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <p style="margin-bottom:20px;">Enter the admin password to access the dashboard.</p>
+    <form method="POST" action="/admin">
+      <label class="field-label">Password</label>
+      <input type="password" name="password" placeholder="Admin password" required>
+      <button class="btn btn-primary" type="submit" style="margin-top:16px;">Login →</button>
+    </form>
+
+  {% else %}
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-num">{{ stats.total }}</div>
+        <div class="stat-label">Participants started</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">{{ stats.completed }}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+
+    <h2 style="font-size:15px; margin-bottom:4px;">Latin Square Balance</h2>
+    <table class="order-table">
+      <tr><th>Order</th><th>Strategies</th><th>Assigned</th></tr>
+      {% set orders = [
+        "Additive → Least Misery → Majority Voting",
+        "Additive → Majority Voting → Least Misery",
+        "Least Misery → Additive → Majority Voting",
+        "Least Misery → Majority Voting → Additive",
+        "Majority Voting → Additive → Least Misery",
+        "Majority Voting → Least Misery → Additive"
+      ] %}
+      {% for i in range(6) %}
+      <tr>
+        <td>{{ i+1 }}</td>
+        <td>{{ orders[i] }}</td>
+        <td>
+          {% for row in stats.orders %}
+            {% if row[0] == i %}{{ row[1] }}{% endif %}
+          {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <a href="/admin/export" class="btn btn-primary" style="margin-top:28px;">
+      Download data as CSV
+    </a>
+    <a href="/admin/logout" class="logout">Log out</a>
+  {% endif %}
+</div>
+</body>
+</html>
