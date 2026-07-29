@@ -9,3 +9,5 @@ services:
         generateValue: true
       - key: ADMIN_PASSWORD
         value: changeme123
+      - key: ANTHROPIC_API_KEY
+        sync: false

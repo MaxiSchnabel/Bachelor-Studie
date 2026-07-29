@@ -8,22 +8,23 @@
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
-      min-height: 220px;
-      max-height: 400px;
+      padding: 16px;
+      min-height: 260px;
+      max-height: 380px;
       overflow-y: auto;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       scroll-behavior: smooth;
     }
     .bubble {
-      max-width: 82%;
-      padding: 12px 16px;
+      max-width: 80%;
+      padding: 11px 15px;
       border-radius: 16px;
       font-size: 14px;
       line-height: 1.6;
+      word-break: break-word;
     }
     .bubble.bot {
       background: var(--surface);
@@ -39,22 +40,15 @@
       border-bottom-right-radius: 4px;
     }
     .typing {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      padding: 14px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      border-bottom-left-radius: 4px;
-      align-self: flex-start;
-      width: fit-content;
+      display: flex; gap: 5px; align-items: center;
+      padding: 13px 15px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; border-bottom-left-radius: 4px;
+      align-self: flex-start; width: fit-content;
     }
     .typing span {
-      width: 7px; height: 7px;
-      background: var(--muted);
-      border-radius: 50%;
-      animation: bounce 1.2s infinite;
+      width: 7px; height: 7px; background: var(--muted);
+      border-radius: 50%; animation: bounce 1.2s infinite;
     }
     .typing span:nth-child(2) { animation-delay: 0.2s; }
     .typing span:nth-child(3) { animation-delay: 0.4s; }
@@ -62,34 +56,68 @@
       0%, 60%, 100% { transform: translateY(0); }
       30% { transform: translateY(-6px); }
     }
-    .options-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-      min-height: 40px;
-    }
-    .opt-btn {
-      padding: 9px 18px;
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      background: var(--surface);
-      font-family: 'Inter', sans-serif;
+
+    /* Live summary panel */
+    .summary-panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 12px;
       font-size: 13px;
-      font-weight: 500;
-      color: var(--ink);
-      cursor: pointer;
-      transition: all 0.15s;
+      color: var(--muted);
+      min-height: 40px;
+      transition: all 0.3s;
     }
-    .opt-btn:hover {
-      border-color: var(--accent);
+    .summary-panel .summary-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .summary-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .summary-tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 12px;
+      color: var(--ink);
+    }
+    .summary-tag.filled {
       background: #EAF4EE;
+      border-color: var(--accent2);
       color: var(--accent);
     }
-    .opt-btn:disabled {
-      opacity: 0.5;
-      cursor: default;
+    .correction-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-style: italic;
     }
+
+    .input-row {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .input-row input[type="text"] {
+      flex: 1; margin: 0;
+      border-radius: 20px;
+      padding: 11px 18px;
+    }
+    .send-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--accent); border: none;
+      color: white; font-size: 18px; cursor: pointer;
+      flex-shrink: 0; display: flex;
+      align-items: center; justify-content: center;
+      transition: opacity 0.2s;
+    }
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn:disabled { opacity: 0.4; cursor: default; }
     #next-btn { display: none; margin-top: 16px; }
   </style>
 </head>
@@ -103,41 +131,38 @@
 
   <div class="eyebrow">Preference Elicitation</div>
   <h1>Your food preferences</h1>
-  <p style="margin-bottom:20px;">
-    Please answer the following questions about your food preferences. Your answers will be used to generate personalised group recommendations.
-  </p>
+  <p style="margin-bottom:14px;">Answer the questions in your own words. If something is recorded incorrectly, just say so — for example <em>"actually I meant mild"</em>.</p>
+
+  <!-- Live summary -->
+  <div class="summary-panel" id="summary-panel">
+    <div class="summary-title">Collected so far</div>
+    <div class="summary-tags" id="summary-tags">
+      <span class="summary-tag" id="tag-dietary">Diet: —</span>
+      <span class="summary-tag" id="tag-cuisine">Cuisine: —</span>
+      <span class="summary-tag" id="tag-spice">Spice: —</span>
+    </div>
+    <div class="correction-hint" id="correction-hint" style="display:none;">
+      Something wrong? Just say <em>"actually I'm vegetarian"</em> or <em>"I meant mild"</em>.
+    </div>
+  </div>
 
   <div class="chat-window" id="chat"></div>
-  <div class="options-grid" id="options"></div>
-  <a href="/personas" class="btn btn-primary" id="next-btn">Continue →</a>
+
+  <div class="input-row" id="input-row">
+    <input type="text" id="user-input" placeholder="Type your answer…" autocomplete="off">
+    <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send">&#10148;</button>
+  </div>
+
+  <div id="next-btn" style="display:none;">
+    <hr style="margin:16px 0;">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">Happy with your preferences? Continue to see your group — or keep typing to make changes.</p>
+    <a href="/personas" class="btn btn-primary">Continue →</a>
+  </div>
 </div>
 
 <script>
-const STEPS = {
-  dietary: {
-    slot: "dietary",
-    question: "Do you follow a particular dietary lifestyle?",
-    options: ["Omnivore — I eat everything", "Vegetarian", "Vegan"],
-    values:  ["omnivore", "vegetarian", "vegan"],
-    next: "cuisine"
-  },
-  cuisine: {
-    slot: "cuisine",
-    question: "Which type of cuisine do you prefer?",
-    options: ["Asian", "Italian", "Mexican", "Indian", "Mediterranean", "American", "No preference"],
-    values:  ["asian", "italian", "mexican", "indian", "mediterranean", "american", "any"],
-    next: "spice"
-  },
-  spice: {
-    slot: "spice_level",
-    question: "How spicy do you like your food?",
-    options: ["Mild 🌿", "Medium 🌶", "Hot 🔥"],
-    values:  ["mild", "medium", "hot"],
-    next: "done"
-  }
-};
-
-let currentStep = "dietary";
+let inputLocked = false;
+let filledCount = 0;
 
 function addBubble(text, cls) {
   const chat = document.getElementById("chat");
@@ -146,83 +171,122 @@ function addBubble(text, cls) {
   div.textContent = text;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
-  return div;
 }
 
 function showTyping() {
   const chat = document.getElementById("chat");
   const div = document.createElement("div");
-  div.className = "typing";
-  div.id = "typing-indicator";
+  div.className = "typing"; div.id = "typing-indicator";
   div.innerHTML = "<span></span><span></span><span></span>";
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
-
 function removeTyping() {
   const el = document.getElementById("typing-indicator");
   if (el) el.remove();
 }
 
-function showOptions(step) {
-  const s = STEPS[step];
-  const container = document.getElementById("options");
-  container.innerHTML = "";
-  s.options.forEach((label, i) => {
-    const btn = document.createElement("button");
-    btn.className = "opt-btn";
-    btn.textContent = label;
-    btn.onclick = () => choose(step, label, s.values[i]);
-    container.appendChild(btn);
-  });
+function lockInput() {
+  inputLocked = true;
+  document.getElementById("send-btn").disabled = true;
+  document.getElementById("user-input").disabled = true;
+}
+function unlockInput() {
+  inputLocked = false;
+  document.getElementById("send-btn").disabled = false;
+  document.getElementById("user-input").disabled = false;
+  document.getElementById("user-input").focus();
 }
 
-function disableOptions() {
-  document.querySelectorAll(".opt-btn").forEach(b => b.disabled = true);
+function updateSummary(pref) {
+  if (!pref) return;
+
+  const labels = {
+    dietary: {omnivore: "Omnivore", vegetarian: "Vegetarian", vegan: "Vegan"},
+    cuisine: {asian: "Asian", italian: "Italian", mexican: "Mexican",
+              indian: "Indian", mediterranean: "Mediterranean",
+              american: "American", any: "Any cuisine"},
+    spice_level: {mild: "Mild", medium: "Medium", hot: "Hot"}
+  };
+
+  if (pref.dietary) {
+    const el = document.getElementById("tag-dietary");
+    el.textContent = "Diet: " + (labels.dietary[pref.dietary] || pref.dietary);
+    el.classList.add("filled");
+  }
+  if (pref.cuisine) {
+    const el = document.getElementById("tag-cuisine");
+    el.textContent = "Cuisine: " + (labels.cuisine[pref.cuisine] || pref.cuisine);
+    el.classList.add("filled");
+  }
+  if (pref.spice_level) {
+    const el = document.getElementById("tag-spice");
+    el.textContent = "Spice: " + (labels.spice_level[pref.spice_level] || pref.spice_level);
+    el.classList.add("filled");
+  }
+
+  const filled = document.querySelectorAll(".summary-tag.filled").length;
+  if (filled > 0) {
+    document.getElementById("correction-hint").style.display = "block";
+  }
 }
 
-function choose(step, label, value) {
-  disableOptions();
-  addBubble(label, "user");
-  document.getElementById("options").innerHTML = "";
+function sendMessage() {
+  if (inputLocked) return;
+  const input = document.getElementById("user-input");
+  const text = input.value.trim();
+  if (!text) return;
+
+  addBubble(text, "user");
+  input.value = "";
+  lockInput();
+  showTyping();
 
   fetch("/api/chat", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({step: step, answer: value})
+    body: JSON.stringify({message: text})
   })
   .then(r => r.json())
   .then(data => {
-    showTyping();
-    setTimeout(() => {
-      removeTyping();
-      if (data.done) {
-        addBubble("Thank you! I now have all the information I need to generate recommendations for your group.", "bot");
-        document.getElementById("next-btn").style.display = "block";
-      } else {
-        addBubble(STEPS[data.next_step].question, "bot");
-        currentStep = data.next_step;
-        showOptions(currentStep);
-      }
-    }, 700);
+    removeTyping();
+    if (data.error) {
+      addBubble("Something went wrong. Please try again.", "bot");
+      unlockInput();
+      return;
+    }
+    addBubble(data.reply, "bot");
+    if (data.pref) updateSummary(data.pref);
+
+    if (data.done) {
+      // Keep input open so user can still correct preferences
+      document.getElementById("next-btn").style.display = "block";
+      document.getElementById("correction-hint").style.display = "none";
+      document.getElementById("user-input").placeholder = "Want to change anything? Just type…";
+      unlockInput();
+    } else {
+      unlockInput();
+    }
+  })
+  .catch(() => {
+    removeTyping();
+    addBubble("Connection error. Please try again.", "bot");
+    unlockInput();
   });
 }
 
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("user-input").addEventListener("keydown", e => {
+    if (e.key === "Enter" && !inputLocked) sendMessage();
+  });
+
   showTyping();
   setTimeout(() => {
     removeTyping();
-    addBubble("Hello! I am a conversational food recommender system. I will ask you a few questions about your food preferences to generate a personalised group recommendation.", "bot");
-    setTimeout(() => {
-      showTyping();
-      setTimeout(() => {
-        removeTyping();
-        addBubble(STEPS["dietary"].question, "bot");
-        showOptions("dietary");
-      }, 700);
-    }, 400);
+    addBubble("What kind of food are you in the mood for today? Feel free to tell me about any dietary preferences, favourite cuisines, or how spicy you like your food.", "bot");
+    document.getElementById("user-input").focus();
   }, 800);
-};
+});
 </script>
 </body>
 </html>

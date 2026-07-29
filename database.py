@@ -60,6 +60,7 @@ def init_db():
             age                     INTEGER,
             gender                  TEXT,
             recommender_experience  TEXT,
+            matrikelnummer          TEXT,
             submitted_at            TEXT NOT NULL
         );
         """)
@@ -108,13 +109,14 @@ def save_demographics(participant_id, form_data):
     with get_db() as conn:
         conn.execute("""
             INSERT OR REPLACE INTO demographics
-            (participant_id, age, gender, recommender_experience, submitted_at)
-            VALUES (?,?,?,?,?)
+            (participant_id, age, gender, recommender_experience, matrikelnummer, submitted_at)
+            VALUES (?,?,?,?,?,?)
         """, (
             participant_id,
             form_data.get("age"),
             form_data.get("gender"),
             form_data.get("recommender_experience"),
+            form_data.get("matrikelnummer") or None,
             datetime.now().isoformat()
         ))
         conn.execute(
@@ -134,7 +136,7 @@ def export_csv():
                 r.fair_1, r.fair_2, r.fair_3,
                 r.sat_1, r.sat_2, r.sat_3, r.sat_4,
                 r.appeal_1, r.appeal_2, r.submitted_at,
-                d.age, d.gender, d.recommender_experience
+                d.age, d.gender, d.recommender_experience, d.matrikelnummer
             FROM participants p
             LEFT JOIN responses r ON p.id = r.participant_id
             LEFT JOIN demographics d ON p.id = d.participant_id
@@ -150,7 +152,7 @@ def export_csv():
         "fair_1","fair_2","fair_3",
         "sat_1","sat_2","sat_3","sat_4",
         "appeal_1","appeal_2","response_submitted_at",
-        "age","gender","recommender_experience"
+        "age","gender","recommender_experience","matrikelnummer"
     ])
     writer.writerows(rows)
     return output.getvalue()

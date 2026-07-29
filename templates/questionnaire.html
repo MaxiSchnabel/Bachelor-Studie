@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Questionnaire – Round {{ round_num }}</title>
+  {% include 'base_style.html' %}
+  <style>
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      margin-top: 28px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+<div class="card card-wide">
+  <div class="progress-bar">
+    <div class="seg done"></div><div class="seg done"></div><div class="seg done"></div><div class="seg done"></div>
+    <div class="seg active"></div>
+    <div class="seg"></div>
+  </div>
+
+  <div class="eyebrow">Round {{ round_num }} of 3 — Questionnaire</div>
+  <h1>Rate the recommendation</h1>
+
+  <form action="/questionnaire" method="POST" id="qform">
+
+    <!-- FAIRNESS -->
+    <div class="section-label">Perceived Fairness</div>
+
+    <div class="likert-group">
+      <div class="likert-label">The recommendation fairly reflects the preferences of the group.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="fair_1" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <div class="likert-group">
+      <div class="likert-label">The recommendation considers the interests of all group members.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="fair_2" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <div class="likert-group">
+      <div class="likert-label">The recommendation process appears fair.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="fair_3" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <!-- SATISFACTION -->
+    <div class="section-label">Satisfaction</div>
+
+    <div class="likert-group">
+      <div class="likert-label">I am satisfied with this recommendation.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="sat_1" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <div class="likert-group">
+      <div class="likert-label">This recommendation matches my preferences.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="sat_2" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <div class="likert-group">
+      <div class="likert-label">I like this recommendation.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="sat_3" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <div class="likert-group">
+      <div class="likert-label">I would consider choosing this recipe.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="sat_4" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <!-- RECIPE APPEAL (control variable) -->
+    <div class="section-label">Recipe Appeal</div>
+
+    <div class="likert-group">
+      <div class="likert-label">I liked the content of the recommended recipe regardless of how it was selected.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="appeal_1" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <div class="likert-group">
+      <div class="likert-label">The recommended recipe matched my personal taste.</div>
+      <div class="likert-scale">
+        {% for v in [1,2,3,4,5] %}
+        <label>
+          <input type="radio" name="appeal_2" value="{{ v }}" required>
+          <div class="circle">{{ v }}</div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="likert-endpoints"><span>Strongly disagree</span><span>Strongly agree</span></div>
+    </div>
+
+    <hr>
+    <button class="btn btn-primary" type="submit">Submit and continue →</button>
+  </form>
+</div>
+
+<script>
+  // Highlight selected circle
+  document.querySelectorAll('.likert-scale input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const group = radio.closest('.likert-scale');
+      group.querySelectorAll('.circle').forEach(c => c.style.background = '');
+      radio.nextElementSibling.style.background = 'var(--accent)';
+      radio.nextElementSibling.style.borderColor = 'var(--accent)';
+      radio.nextElementSibling.style.color = '#fff';
+    });
+  });
+</script>
+</body>
+</html>
