@@ -58,15 +58,29 @@ def admin():
 
 
 @app.route("/admin/export")
-def admin_export():
-    if not session.get("admin"):
+@app.route("/admin/export/<token>")
+def admin_export(token=None):
+    # Allow export via token (no session needed) or via session
+    valid_token = token and token == ADMIN_PASSWORD
+    if not session.get("admin") and not valid_token:
         return redirect(url_for("admin"))
-    csv_data = export_csv()
-    return Response(
-        csv_data,
-        mimetype="text/csv",
-        headers={"Content-Disposition": "attachment; filename=study_data.csv"}
-    )
+    try:
+        csv_data = export_csv()
+        return Response(
+            csv_data,
+            mimetype="text/csv",
+            headers={"Content-Disposition": "attachment; filename=study_data.csv"}
+        )
+    except Exception as e:
+        return f"Export error: {e}", 500
+
+
+@app.route("/admin/check-pw")
+def check_pw():
+    """Temporary debug route — remove after fixing password."""
+    import os
+    pw = os.environ.get("ADMIN_PASSWORD", "NOT SET")
+    return f"ADMIN_PASSWORD is: {pw}"
 
 
 @app.route("/admin/logout")
