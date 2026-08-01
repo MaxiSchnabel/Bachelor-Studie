@@ -1,7 +1,7 @@
 from flask import (Flask, render_template, request,
                    session, redirect, url_for, Response)
 from aggregation import recommend
-from database import (init_db, create_participant, save_preferences,
+from database import (init_db, create_participant, save_preferences, is_postgres,
                       save_response, save_demographics,
                       export_csv, get_stats, STRATEGY_ORDERS)
 import os
@@ -33,7 +33,10 @@ PERSONAS = [
 
 @app.before_request
 def setup():
-    init_db()
+    try:
+        init_db()
+    except Exception as e:
+        app.logger.error(f"init_db failed: {e}")
 
 
 # ── Admin ────────────────────────────────────────────────────────────────────
@@ -70,6 +73,23 @@ def admin_export():
 def admin_logout():
     session.pop("admin", None)
     return redirect(url_for("admin"))
+
+
+@app.route("/admin/reset-db")
+def admin_reset_db():
+    """Delete and recreate the local SQLite database (only works without PostgreSQL)."""
+    if not session.get("admin"):
+        return redirect(url_for("admin"))
+    if not is_postgres():
+        import os
+        from database import SQLITE_PATH
+        try:
+            os.remove(SQLITE_PATH)
+        except FileNotFoundError:
+            pass
+        init_db()
+        return "Database reset successfully. <a href=/admin>Back to admin</a>"
+    return "Using PostgreSQL — no reset needed. <a href=/admin>Back to admin</a>"
 
 
 # ── Study flow ────────────────────────────────────────────────────────────────
@@ -482,7 +502,11 @@ def demographics():
         return redirect(url_for("index"))
 
     if request.method == "POST":
-        save_demographics(session["pid"], request.form)
+        try:
+            save_demographics(session["pid"], request.form)
+        except Exception as e:
+            app.logger.error(f"save_demographics error: {e}")
+            return f"Database error: {e}", 500
         session.clear()
         return redirect(url_for("done"))
 
