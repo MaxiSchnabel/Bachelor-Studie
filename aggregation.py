@@ -35,25 +35,29 @@ def score_recipe(recipe, preference):
         score += 2
 
     # --- Spice preference ---
-    recipe_spice = recipe.get("spice_level", 1)
-    if spice == "mild":
-        if recipe_spice <= 2:
+    # Recipe spice_level is a string: mild / medium / spicy
+    # Participant preference from chat: mild / medium / hot
+    recipe_spice = recipe.get("spice_level", "mild")
+    spice_norm = "spicy" if spice == "hot" else spice
+
+    if spice_norm == "mild":
+        if recipe_spice == "mild":
             score += 2
-        elif recipe_spice == 3:
+        elif recipe_spice == "medium":
             score += 0
         else:
             score -= 3
-    elif spice == "medium":
-        if recipe_spice in [2, 3]:
+    elif spice_norm == "medium":
+        if recipe_spice == "medium":
             score += 2
-        elif recipe_spice == 1:
-            score += 0
+        elif recipe_spice == "mild":
+            score += 1
         else:
             score -= 1
-    elif spice == "hot":
-        if recipe_spice >= 4:
+    elif spice_norm == "spicy":
+        if recipe_spice == "spicy":
             score += 2
-        elif recipe_spice == 3:
+        elif recipe_spice == "medium":
             score += 1
         else:
             score -= 1

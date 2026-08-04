@@ -18,7 +18,7 @@ PERSONAS = [
         "name": "Alex",
         "dietary":     "omnivore",
         "cuisine":     "indian",
-        "spice_level": "hot",
+        "spice_level": "spicy",
         "description": "Loves Indian food and very spicy dishes."
     },
     {

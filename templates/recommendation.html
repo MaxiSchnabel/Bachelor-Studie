@@ -40,8 +40,8 @@
         {{ recipe.dietary }}
       </span>
       <span class="tag">{{ recipe.cuisine }}</span>
-      <span class="tag {% if recipe.spice_level >= 4 %}spicy{% endif %}">
-        🌶 {{ recipe.spice_level }}/5
+      <span class="tag {% if recipe.spice_level == 'spicy' %}spicy{% endif %}">
+        🌶 {{ recipe.spice_level }}
       </span>
     </div>
   </div>
