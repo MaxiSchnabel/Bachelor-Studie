@@ -3,6 +3,37 @@
 <head>
   <title>Demographics</title>
   {% include 'base_style.html' %}
+  <style>
+    .vp-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-top: 8px;
+      display: none;
+    }
+    .vp-box.visible { display: block; }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .checkbox-row label {
+      font-size: 14px;
+      color: var(--ink);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
 <div class="card">
@@ -39,13 +70,46 @@
       <option value="rarely">Rarely or never</option>
     </select>
 
-    <label class="field-label">Student ID / Matrikelnummer <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
-    <input type="text" name="matrikelnummer" placeholder="e.g. 1234567" maxlength="20">
-    <p style="font-size:12px;color:var(--muted);margin-top:4px;">Only enter this if you need your participation confirmed for course credit.</p>
+    <!-- VP Hours checkbox -->
+    <div class="checkbox-row">
+      <input type="checkbox" id="vp_needed" name="vp_needed" value="yes" onchange="toggleVP(this)">
+      <label for="vp_needed">I need VP hours (Versuchspersonenstunden) for this participation.</label>
+    </div>
+
+    <div class="vp-box" id="vp-box">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;margin-top:0;">
+        Please provide your details below. This information is only used to confirm your participation for VP hours and is handled separately from your anonymous study data.
+      </p>
+
+      <label class="field-label" style="margin-top:0;">Full Name</label>
+      <input type="text" name="vp_name" id="vp_name" placeholder="e.g. Max Mustermann" maxlength="100">
+
+      <label class="field-label">Student ID / Matrikelnummer</label>
+      <input type="text" name="matrikelnummer" id="matrikelnummer" placeholder="e.g. 1234567" maxlength="20">
+    </div>
 
     <hr>
     <button class="btn btn-primary" type="submit">Finish →</button>
   </form>
 </div>
+
+<script>
+function toggleVP(checkbox) {
+  const box = document.getElementById('vp-box');
+  const nameInput = document.getElementById('vp_name');
+  const matrInput = document.getElementById('matrikelnummer');
+  if (checkbox.checked) {
+    box.classList.add('visible');
+    nameInput.required = true;
+    matrInput.required = true;
+  } else {
+    box.classList.remove('visible');
+    nameInput.required = false;
+    nameInput.value = '';
+    matrInput.required = false;
+    matrInput.value = '';
+  }
+}
+</script>
 </body>
 </html>

@@ -3,6 +3,77 @@
 <head>
   <title>Informed Consent</title>
   {% include 'base_style.html' %}
+  <style>
+    .card { max-width: 700px; }
+    .consent-section { margin-bottom: 20px; }
+    .consent-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .consent-section p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+    .consent-section ol, .consent-section ul {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      padding-left: 20px;
+      margin-bottom: 6px;
+    }
+    .key-points {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    .key-points ul {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+      padding-left: 18px;
+      margin: 0;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .contact-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .contact-box strong { color: var(--ink); display: block; margin-bottom: 2px; }
+    .university-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .university-header .uni-name {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .page-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
 </head>
 <body>
 <div class="card">
@@ -12,18 +83,92 @@
     <div class="seg"></div><div class="seg"></div><div class="seg"></div>
   </div>
 
-  <div class="eyebrow">University of Regensburg</div>
-  <h1>Informed Consent</h1>
-
-  <p>This study investigates how different recommendation approaches affect your experience with a group food recommender system. It is conducted as part of a bachelor's thesis at the University of Regensburg.</p>
-
-  <div class="infobox">
-    <strong>What will happen:</strong> You will chat with a recommender system, receive recipe suggestions for a virtual group, and answer a short questionnaire — three times in a row. The whole session takes approximately <strong>10–15 minutes</strong>.
+  <div class="university-header">
+    <span class="uni-name">University of Regensburg</span>
+    <span class="page-label">Page 1/2</span>
   </div>
 
-  <p>Your participation is <strong>voluntary and fully anonymous</strong>. No personal data beyond age and gender is collected. You may close the browser at any time without consequence. Data is used solely for research purposes.</p>
+  <div class="eyebrow">Informed Consent for Study Participation</div>
+  <h1 style="font-size:22px;margin-bottom:16px;">Group Food Recommender — Fairness & Satisfaction</h1>
 
-  <p style="margin-top:10px;">If you have questions, contact: <strong>Maximilian.Schnabel@stud.uni-regensburg.de</strong></p>
+  <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px;">
+    You are invited to take part in the online study <strong style="color:var(--ink);">"Group Food Recommender user satisfaction and perceived fairness"</strong>. The study is conducted by Maximilian Schnabel and overseen by David Elsweiler at University of Regensburg. We expect about 50 participants. Data collection is planned from 2026-08-06 to 2026-09-21.
+  </p>
+
+  <div class="key-points">
+    <ul>
+      <li>Participation is voluntary. You may stop at any time without penalty or withdraw your consent</li>
+      <li>One session of the online study takes about 15 minutes</li>
+      <li>You will receive 0,25 VP as compensation for participating, if needed</li>
+      <li>We collect demographic information (e.g. age and gender) for analysis</li>
+      <li>The study may involve collecting the following data: your input</li>
+      <li>Recordings and research data are processed in accordance with the GDPR. They will be not anonymized, stored, analyzed, and published only in summarized form, so that it may still be possible to draw conclusions about you as an individual.</li>
+    </ul>
+  </div>
+
+  <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px;">
+    The alternative is not to take part. If you have questions about the study, the consent process, or your rights as a participant, please contact Maximilian Schnabel. Please read the following information carefully and take the time you need before deciding.
+  </p>
+
+  <div class="consent-section">
+    <h2>1. Purpose and Goal of this Research</h2>
+    <p>This study investigates perceptions of fairness and satisfaction in conversational group recipe recommendations. Your participation supports this research. Results may be published in scientific papers, theses, or presented at academic conferences.</p>
+  </div>
+
+  <div class="consent-section">
+    <h2>2. Study Participation</h2>
+    <p>Your participation in this online study is voluntary. You may skip questions or tasks and stop at any time without penalty and without giving a reason. If you feel uncomfortable, you may stop immediately. The researchers may end your participation if this is necessary for organizational reasons, because of invalid trials, or for your safety. Repeated participation in this study is not permitted.</p>
+  </div>
+
+  <div class="consent-section">
+    <h2>3. Study Procedure</h2>
+    <p>If you agree to participate, the study will usually proceed as follows:</p>
+    <ol>
+      <li>First read the study information and provide informed consent.</li>
+      <li>State your preferences the Recommender System asks you about, in a structured dialogue.</li>
+      <li>Your preferences are combined with the preferences of two simulated group members.</li>
+      <li>Look at the generated recommendation and fill out the questionnaire after that.</li>
+      <li>Repeat step 4, two more times.</li>
+      <li>Complete short demographic questionnaire, then you are finished.</li>
+    </ol>
+    <p>If needed, the researchers can provide confirmation of participation after the study.</p>
+  </div>
+
+  <div class="consent-section">
+    <h2>4. Risks and Benefits</h2>
+    <p>Based on current knowledge, this online study does not involve risks beyond those of everyday activities. Some questions or tasks may feel uncomfortable. You may skip them or stop participating at any time. Despite technical and organizational safeguards, a loss of confidentiality or unauthorized access to data cannot be completely ruled out. Participating in this study rewards you with 0.25 VP if needed. Your participation supports research in human-computer interaction.</p>
+  </div>
+
+  <div class="consent-section">
+    <h2>5. Data Protection and Confidentiality</h2>
+    <p>In this study, we collect directly identifying information, where necessary, and research data. Processing is based on your consent and carried out in accordance with the General Data Protection Regulation (GDPR). You may request access to identifiable data, ask for incorrect information to be corrected, and - where legally possible - request restriction of processing or deletion. With your consent, we will collect your input. Study results may be published in scientific papers or other research reports. Directly identifying information will be kept only as long as necessary. It will then be deleted or separated from the research data. During analysis, only the researchers and authorized project staff will have access to the raw data and transcribed interviews. Directly identifying information will be stored separately and will not be published. The data will be not anonymized and published only in summarized form, so that it may still be possible to draw conclusions about you as an individual. Because no contact details are collected, we cannot contact you afterwards about follow-up questions, future studies, or possible data protection incidents.</p>
+  </div>
+
+  <div class="university-header" style="margin-top:8px;">
+    <span class="uni-name">University of Regensburg</span>
+    <span class="page-label">Page 2/2</span>
+  </div>
+
+  <div class="consent-section">
+    <h2>6. Identification of Investigators</h2>
+    <p>If you have questions about the study or your data, please contact:</p>
+    <div class="contact-grid">
+      <div class="contact-box">
+        <strong>Research team</strong>
+        Maximilian Schnabel<br>
+        Maximilian.Schnabel@stud.uni-regensburg.de<br>
+        University of Regensburg
+      </div>
+      <div class="contact-box">
+        <strong>Principal investigator</strong>
+        David Elsweiler<br>
+        David.Elsweiler@informatik.uni-regensburg.de<br>
+        University of Regensburg<br>
+        Universitätsstr. 31<br>
+        93053 Regensburg, Germany
+      </div>
+    </div>
+  </div>
 
   <hr>
 
@@ -31,7 +176,7 @@
     <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:24px;">
       <input type="checkbox" id="cb" required style="width:18px;height:18px;margin-top:3px;flex-shrink:0;accent-color:var(--accent);">
       <label for="cb" style="font-size:14px;color:var(--ink);line-height:1.6;cursor:pointer;">
-        I have read and understood the above information. I voluntarily agree to participate and consent to the anonymous use of my data for research purposes.
+        I have read and understood the above information. I voluntarily agree to participate and consent to the use of my data for research purposes as described above.
       </label>
     </div>
     <button class="btn btn-primary" type="submit">I agree — Begin →</button>

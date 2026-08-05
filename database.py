@@ -133,9 +133,24 @@ def init_db():
                     gender                  TEXT,
                     recommender_experience  TEXT,
                     matrikelnummer          TEXT,
+                    vp_name                 TEXT,
                     submitted_at            TEXT NOT NULL
                 );
             """)
+        # Migration: add matrikelnummer if missing (handles old databases)
+        if is_postgres():
+            try:
+                cur.execute("ALTER TABLE demographics ADD COLUMN IF NOT EXISTS matrikelnummer TEXT")
+                cur.execute("ALTER TABLE demographics ADD COLUMN IF NOT EXISTS vp_name TEXT")
+            except Exception:
+                pass
+        else:
+            for col in ["matrikelnummer", "vp_name"]:
+                try:
+                    cur.execute(f"ALTER TABLE demographics ADD COLUMN {col} TEXT")
+                except Exception:
+                    pass
+
         conn.commit()
     finally:
         conn.close()
@@ -269,7 +284,7 @@ def export_csv():
                 r.fair_1, r.fair_2, r.fair_3,
                 r.sat_1, r.sat_2, r.sat_3, r.sat_4,
                 r.appeal_1, r.appeal_2, r.submitted_at,
-                d.age, d.gender, d.recommender_experience, d.matrikelnummer
+                d.age, d.gender, d.recommender_experience, d.matrikelnummer, d.vp_name
             FROM participants p
             LEFT JOIN responses r ON p.id = r.participant_id
             LEFT JOIN demographics d ON p.id = d.participant_id
@@ -288,7 +303,7 @@ def export_csv():
         "fair_1","fair_2","fair_3",
         "sat_1","sat_2","sat_3","sat_4",
         "appeal_1","appeal_2","response_submitted_at",
-        "age","gender","recommender_experience","matrikelnummer"
+        "age","gender","recommender_experience","matrikelnummer","vp_name"
     ])
     writer.writerows(rows)
     return output.getvalue()
