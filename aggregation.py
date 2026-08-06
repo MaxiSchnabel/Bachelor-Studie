@@ -118,6 +118,10 @@ def recommend(participant_pref, persona_prefs, strategy, n=3, exclude=None):
 
         scored.append((recipe, total, scores))
 
+    # Shuffle first so ties are broken randomly, not by position in JSON
+    import random
+    random.shuffle(scored)
+
     # Sort descending — tuples compare element by element automatically
     scored.sort(key=lambda x: x[1], reverse=True)
     return scored[:n]

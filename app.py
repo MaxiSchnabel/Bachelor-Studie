@@ -83,6 +83,32 @@ def check_pw():
     return f"ADMIN_PASSWORD is: {pw}"
 
 
+@app.route("/admin/migrate")
+def admin_migrate():
+    """Run database migrations — add missing columns."""
+    if not session.get("admin"):
+        return redirect(url_for("admin"))
+    from database import get_db, is_postgres
+    conn = get_db()
+    results = []
+    try:
+        cur = conn.cursor()
+        if is_postgres():
+            cur.execute("ALTER TABLE demographics ADD COLUMN IF NOT EXISTS matrikelnummer TEXT")
+        else:
+            try:
+                cur.execute("ALTER TABLE demographics ADD COLUMN matrikelnummer TEXT")
+            except Exception:
+                pass
+        conn.commit()
+        results.append("matrikelnummer column: OK")
+    except Exception as e:
+        results.append(f"Error: {e}")
+    finally:
+        conn.close()
+    return "<br>".join(results) + "<br><a href=/admin>Back to admin</a>"
+
+
 @app.route("/admin/logout")
 def admin_logout():
     session.pop("admin", None)
@@ -216,6 +242,9 @@ def extract_preferences(text, current_pref=None):
                           "falafel", "hummus", "kebab", "shawarma", "tzatziki"],
         "american":      ["american", "burger", "bbq", "barbecue", "wings",
                           "steak", "ribs", "hot dog", "fried chicken"],
+        "indian":        ["indian", "india", "curry", "tikka", "masala",
+                          "dal", "biryani", "naan", "tandoori", "samosa",
+                          "paneer", "vindaloo", "korma", "chana", "saag"],
         "any":           ["no preference", "don't mind", "dont mind",
                           "no specific", "whatever", "any cuisine",
                           "any food", "anything works", "no strong preference"],
@@ -272,6 +301,36 @@ def extract_preferences(text, current_pref=None):
         found["spice_level"] = spice_detected
 
     return found, corrected
+
+
+# Follow-up questions per slot — add conversational depth
+FOLLOWUP_QUESTIONS = {
+    "dietary_vegan": "Great! Do you tend to prefer hearty, filling dishes or something lighter?",
+    "dietary_vegetarian": "Got it! Are you more into comfort food like pasta and curries, or do you prefer fresh salads and grain bowls?",
+    "dietary_omnivore": "No restrictions — nice! Do you tend to prefer meat-heavy dishes or do you enjoy a mix?",
+    "cuisine_italian": "Italian it is! Are you more of a pasta person, or do you prefer pizza and risotto?",
+    "cuisine_mexican": "Mexican sounds great! Do you go for tacos and burritos, or do you prefer something like enchiladas or casseroles?",
+    "cuisine_mediterranean": "Mediterranean cuisine is a great choice! Do you prefer grilled dishes like kebabs, or lighter options like salads and dips?",
+    "cuisine_asian": None,  # Handled separately by asian sub-cuisine question
+    "cuisine_indian": "Indian food! Do you prefer rich curry dishes, or lighter options like dal and rice bowls?",
+    "cuisine_american": "American classics! Are you a burger and BBQ fan, or do you prefer something like pasta or salads?",
+    "cuisine_any": None,  # No follow-up needed for no preference
+    "spice_hot": "You like it hot! Do you prefer a slow-building heat or an immediate kick?",
+    "spice_medium": "Medium spice — a good balance! Do you lean more towards mild or spicy when you have the choice?",
+    "spice_mild": "Mild it is! Do you avoid spice entirely, or is a little heat okay occasionally?",
+}
+
+
+def get_followup(slot, value, pref):
+    """Return a follow-up question after a slot is filled, if appropriate."""
+    # Don't ask follow-up if we already asked one for this slot
+    if pref.get(f"followup_asked_{slot}"):
+        return None
+    # Don't ask follow-up if all slots already filled
+    if all(k in pref for k in ["dietary", "cuisine", "spice_level"]):
+        return None
+    key = f"{slot}_{value}" if slot in ["dietary", "cuisine"] else f"spice_{value}"
+    return FOLLOWUP_QUESTIONS.get(key)
 
 
 def next_question(pref):
@@ -435,7 +494,25 @@ def chat():
         reply = hint + (next_q or "Could you tell me a bit more?")
     else:
         ack = " ".join(p for p in ack_parts if p)
-        reply = f"{ack} {next_q}".strip() if next_q else ack
+
+        # Check if we should ask a follow-up question instead of moving to next slot
+        followup = None
+        if newly and not corrected:
+            # Find the most recently filled slot
+            for slot in ["dietary", "cuisine", "spice_level"]:
+                if slot in newly:
+                    followup = get_followup(slot, pref.get(slot, ""), pref)
+                    if followup:
+                        pref[f"followup_asked_{slot}"] = True
+                        session["participant_pref"] = pref
+                    break
+
+        if followup:
+            reply = f"{ack} {followup}".strip()
+        elif next_q:
+            reply = f"{ack} {next_q}".strip()
+        else:
+            reply = ack
 
     return jsonify({"reply": reply, "done": False,
                     "pref": pref_state(pref)})

@@ -1,68 +1,527 @@
 [
-  {"name": "Beef Enchiladas", "cuisine": "mexican", "dietary": "omnivore", "spice_level": "medium", "description": "Corn tortillas filled with seasoned beef and smothered in a rich chili sauce, topped with melted cheese."},
-  {"name": "Chicken Fajitas", "cuisine": "mexican", "dietary": "omnivore", "spice_level": "mild", "description": "Tender strips of grilled chicken served with sautéed peppers and onions in warm flour tortillas."},
-  {"name": "Chiles Rellenos", "cuisine": "mexican", "dietary": "omnivore", "spice_level": "medium", "description": "Poblano peppers stuffed with cheese and meat, coated in egg batter and lightly fried."},
-  {"name": "Carne Asada Tacos", "cuisine": "mexican", "dietary": "omnivore", "spice_level": "mild", "description": "Grilled and sliced marinated beef served in soft corn tortillas with fresh cilantro and onion."},
-  {"name": "Spicy Chorizo Tacos", "cuisine": "mexican", "dietary": "omnivore", "spice_level": "spicy", "description": "Crispy spiced pork chorizo served in small corn tortillas with salsa and lime."},
-  {"name": "Spicy Jalapeño Quesadillas", "cuisine": "mexican", "dietary": "vegetarian", "spice_level": "spicy", "description": "Crispy flour tortillas filled with melted cheese and fresh jalapeños for a spicy kick."},
-  {"name": "Vegetarian Stuffed Peppers", "cuisine": "mexican", "dietary": "vegetarian", "spice_level": "mild", "description": "Bell peppers filled with a mild mixture of rice, black beans, corn, and melted cheese."},
-  {"name": "Black Bean Tacos", "cuisine": "mexican", "dietary": "vegetarian", "spice_level": "medium", "description": "Soft tacos filled with seasoned black beans, shredded cabbage, and a tangy lime crema."},
-  {"name": "Vegetarian Enchiladas", "cuisine": "mexican", "dietary": "vegetarian", "spice_level": "medium", "description": "Corn tortillas filled with vegetables and cheese, baked in a mildly spiced tomato enchilada sauce."},
-  {"name": "Vegetarian Mexican Casserole", "cuisine": "mexican", "dietary": "vegetarian", "spice_level": "mild", "description": "A hearty baked dish layered with tortillas, beans, corn, and cheese in a mild tomato sauce."},
-  {"name": "Tofu Burrito Bowl", "cuisine": "mexican", "dietary": "vegan", "spice_level": "medium", "description": "A nourishing bowl with seasoned tofu, rice, black beans, salsa, and guacamole."},
-  {"name": "Black Bean Taco Soup", "cuisine": "mexican", "dietary": "vegan", "spice_level": "spicy", "description": "A bold and spicy plant-based soup loaded with black beans, tomatoes, and taco seasonings."},
-  {"name": "Vegan Chickpea Tacos", "cuisine": "mexican", "dietary": "vegan", "spice_level": "mild", "description": "Soft tacos filled with gently spiced chickpeas, fresh salsa, and avocado slices."},
-  {"name": "Vegan Mexican Menudo", "cuisine": "mexican", "dietary": "vegan", "spice_level": "spicy", "description": "A fiery vegan take on the traditional Mexican stew using hominy and bold chili broth."},
-  {"name": "Vegan Tex Mex Bowl", "cuisine": "mexican", "dietary": "vegan", "spice_level": "spicy", "description": "A spicy Tex-Mex inspired bowl with seasoned beans, rice, roasted vegetables, and salsa."},
-
-  {"name": "Spaghetti Carbonara", "cuisine": "italian", "dietary": "omnivore", "spice_level": "mild", "description": "Classic Roman pasta with a creamy egg and Pecorino sauce, pancetta, and black pepper."},
-  {"name": "Spaghetti Bolognese", "cuisine": "italian", "dietary": "omnivore", "spice_level": "medium", "description": "Slow-cooked meat ragù with tomatoes and herbs served over spaghetti with Parmesan."},
-  {"name": "Spicy Chicken Cacciatore", "cuisine": "italian", "dietary": "omnivore", "spice_level": "spicy", "description": "Hunter-style braised chicken in a robust spicy tomato sauce with olives and capers."},
-  {"name": "Nduja Pasta", "cuisine": "italian", "dietary": "omnivore", "spice_level": "spicy", "description": "Pasta tossed with fiery Calabrian nduja sausage spread melted into a rich tomato sauce."},
-  {"name": "Lasagna", "cuisine": "italian", "dietary": "omnivore", "spice_level": "mild", "description": "Layers of pasta, seasoned beef ragù, creamy béchamel, and melted mozzarella baked until golden."},
-  {"name": "Pesto Pasta", "cuisine": "italian", "dietary": "vegetarian", "spice_level": "mild", "description": "Pasta tossed in a fragrant sauce of fresh basil, pine nuts, Parmesan, and olive oil."},
-  {"name": "Vegetarian Minestrone", "cuisine": "italian", "dietary": "vegetarian", "spice_level": "medium", "description": "A hearty Italian vegetable soup with cannellini beans, seasonal vegetables, and pasta."},
-  {"name": "Gnocchi with Pomodoro Sauce", "cuisine": "italian", "dietary": "vegetarian", "spice_level": "medium", "description": "Soft potato gnocchi served in a simple, mildly seasoned fresh tomato sauce with basil."},
-  {"name": "Eggplant Parmesan", "cuisine": "italian", "dietary": "vegetarian", "spice_level": "medium", "description": "Breaded and fried eggplant layered with tomato sauce and mozzarella, baked until bubbly."},
-  {"name": "Spaghetti Cacio e Pepe", "cuisine": "italian", "dietary": "vegetarian", "spice_level": "spicy", "description": "A bold Roman pasta dish with Pecorino Romano cheese and a generous amount of cracked black pepper."},
-  {"name": "Penne Arrabbiata", "cuisine": "italian", "dietary": "vegan", "spice_level": "spicy", "description": "Penne pasta in a fiery tomato sauce made with garlic and dried red chili flakes."},
-  {"name": "Vegan Mushroom Risotto", "cuisine": "italian", "dietary": "vegan", "spice_level": "medium", "description": "Creamy Arborio rice slow-cooked with mixed mushrooms, white wine, and vegetable broth."},
-  {"name": "Italian Garbanzo Bean Soup", "cuisine": "italian", "dietary": "vegan", "spice_level": "mild", "description": "A comforting Italian soup with chickpeas, tomatoes, rosemary, and a drizzle of olive oil."},
-  {"name": "Panzanella", "cuisine": "italian", "dietary": "vegan", "spice_level": "mild", "description": "A rustic Tuscan bread salad with ripe tomatoes, cucumber, basil, and a red wine vinaigrette."},
-  {"name": "Chickpea Pasta with Spinach", "cuisine": "italian", "dietary": "vegan", "spice_level": "spicy", "description": "A spicy and protein-rich pasta dish combining chickpeas, fresh spinach, garlic, and chili oil."},
-
-  {"name": "Greek Lemon Chicken", "cuisine": "mediterranean", "dietary": "omnivore", "spice_level": "mild", "description": "Roasted chicken and potatoes marinated in lemon juice, garlic, and oregano."},
-  {"name": "Mediterranean Lamb and Lentil Stew", "cuisine": "mediterranean", "dietary": "omnivore", "spice_level": "mild", "description": "A warming stew of tender lamb, green lentils, tomatoes, and aromatic Mediterranean spices."},
-  {"name": "Spicy Harissa Chicken Kebabs", "cuisine": "mediterranean", "dietary": "omnivore", "spice_level": "spicy", "description": "Grilled chicken skewers marinated in fiery North African harissa paste with lemon."},
-  {"name": "Shrimp Fra Diavolo", "cuisine": "mediterranean", "dietary": "omnivore", "spice_level": "medium", "description": "Succulent shrimp in a spiced tomato and white wine sauce served over pasta or with crusty bread."},
-  {"name": "Grilled Octopus", "cuisine": "mediterranean", "dietary": "omnivore", "spice_level": "mild", "description": "Tender grilled octopus drizzled with olive oil, lemon, and fresh herbs."},
-  {"name": "Shakshuka", "cuisine": "mediterranean", "dietary": "vegetarian", "spice_level": "medium", "description": "Eggs poached in a warmly spiced tomato and pepper sauce, served with crusty bread."},
-  {"name": "Greek Salad with Couscous and Feta", "cuisine": "mediterranean", "dietary": "vegetarian", "spice_level": "medium", "description": "A refreshing salad of couscous, olives, cucumber, tomatoes, and crumbled spicy feta cheese."},
-  {"name": "Spanakopita", "cuisine": "mediterranean", "dietary": "vegetarian", "spice_level": "mild", "description": "Flaky phyllo pastry filled with a savory mixture of spinach, feta cheese, and herbs."},
-  {"name": "Menemen", "cuisine": "mediterranean", "dietary": "vegetarian", "spice_level": "spicy", "description": "A spicy Turkish scrambled egg dish cooked with tomatoes, green peppers, and chili flakes."},
-  {"name": "Sweet Potato Spinach Halloumi Curry", "cuisine": "mediterranean", "dietary": "vegetarian", "spice_level": "spicy", "description": "A vibrant curry with sweet potato, fresh spinach, and pan-fried halloumi in a spiced coconut sauce."},
-  {"name": "Red Lentil Soup", "cuisine": "mediterranean", "dietary": "vegan", "spice_level": "spicy", "description": "A bold and warming soup of red lentils, cumin, and chili with a squeeze of fresh lemon."},
-  {"name": "Falafel", "cuisine": "mediterranean", "dietary": "vegan", "spice_level": "mild", "description": "Crispy fried chickpea patties seasoned with herbs and spices, served with tahini sauce."},
-  {"name": "Eggplant Caponata", "cuisine": "mediterranean", "dietary": "vegan", "spice_level": "medium", "description": "A Sicilian sweet and sour relish of eggplant, tomatoes, olives, capers, and celery."},
-  {"name": "Stuffed Grape Leaves", "cuisine": "mediterranean", "dietary": "vegan", "spice_level": "medium", "description": "Tender grape leaves filled with seasoned rice, fresh herbs, and a squeeze of lemon juice."},
-  {"name": "Spicy Moroccan Harira", "cuisine": "mediterranean", "dietary": "vegan", "spice_level": "spicy", "description": "A hearty Moroccan soup with lentils, chickpeas, tomatoes, and warming spices like cinnamon and cumin."},
-
-  {"name": "Pad Thai", "cuisine": "thai", "dietary": "omnivore", "spice_level": "mild", "description": "Stir-fried rice noodles with egg, chicken, bean sprouts, and crushed peanuts in a tangy tamarind sauce."},
-  {"name": "Pad Krapow", "cuisine": "thai", "dietary": "omnivore", "spice_level": "spicy", "description": "A fiery Thai stir-fry of minced chicken with holy basil, garlic, and chili served over rice with a fried egg."},
-  {"name": "Vegetable Fried Rice", "cuisine": "thai", "dietary": "vegetarian", "spice_level": "medium", "description": "Thai-style fried rice with egg, mixed vegetables, and a mildly spiced seasoning sauce."},
-  {"name": "Vegan Red Curry with Tofu", "cuisine": "thai", "dietary": "vegan", "spice_level": "spicy", "description": "Silken tofu and vegetables simmered in a spicy Thai red curry paste and creamy coconut milk."},
-
-  {"name": "Spicy Korean Marinated Pork", "cuisine": "korean", "dietary": "omnivore", "spice_level": "spicy", "description": "Thinly sliced pork belly marinated in a spicy gochujang and sesame sauce, grilled until caramelised."},
-  {"name": "Bibimbap", "cuisine": "korean", "dietary": "vegetarian", "spice_level": "medium", "description": "A Korean rice bowl topped with seasoned vegetables, a fried egg, and a dollop of gochujang sauce."},
-  {"name": "Korean Japchae", "cuisine": "korean", "dietary": "vegan", "spice_level": "mild", "description": "Glass noodles stir-fried with colourful vegetables and seasoned with soy sauce and sesame oil."},
-  {"name": "Gochujang Fried Rice", "cuisine": "korean", "dietary": "vegan", "spice_level": "medium", "description": "Fried rice tossed with gochujang paste, vegetables, and sesame oil for a savoury and slightly spicy dish."},
-
-  {"name": "Mapo Tofu", "cuisine": "chinese", "dietary": "omnivore", "spice_level": "spicy", "description": "Silken tofu and minced pork in a bold Sichuan sauce of fermented bean paste, chili oil, and Sichuan pepper."},
-  {"name": "Lo Mein", "cuisine": "chinese", "dietary": "vegetarian", "spice_level": "medium", "description": "Soft egg noodles stir-fried with colourful vegetables in a mildly seasoned soy and oyster sauce."},
-  {"name": "Baby Bok Choy with Mushrooms", "cuisine": "chinese", "dietary": "vegetarian", "spice_level": "mild", "description": "Tender baby bok choy and shiitake mushrooms stir-fried in a mild savory mushroom sauce with garlic and ginger."},
-  {"name": "Cabbage Stir Fry", "cuisine": "chinese", "dietary": "vegan", "spice_level": "mild", "description": "Quickly stir-fried shredded cabbage with garlic, ginger, and a simple soy sauce seasoning."},
-
-  {"name": "Chicken Teriyaki", "cuisine": "japanese", "dietary": "omnivore", "spice_level": "mild", "description": "Grilled chicken glazed with a sweet and savoury teriyaki sauce, served with steamed rice."},
-  {"name": "Mushroom Ramen", "cuisine": "japanese", "dietary": "vegetarian", "spice_level": "medium", "description": "A rich vegetarian ramen with a miso-based broth, shiitake mushrooms, soft-boiled egg, and noodles."},
-  {"name": "Curry Udon", "cuisine": "japanese", "dietary": "vegan", "spice_level": "spicy", "description": "Thick udon noodles served in a spicy Japanese curry broth with tofu and seasonal vegetables."}
+  {
+    "name": "Beef Enchiladas",
+    "cuisine": "mexican",
+    "dietary": "omnivore",
+    "spice_level": "medium",
+    "description": "Corn tortillas filled with seasoned beef and smothered in a rich chili sauce, topped with melted cheese."
+  },
+  {
+    "name": "Chicken Fajitas",
+    "cuisine": "mexican",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Tender strips of grilled chicken served with saut\u00e9ed peppers and onions in warm flour tortillas."
+  },
+  {
+    "name": "Chiles Rellenos",
+    "cuisine": "mexican",
+    "dietary": "omnivore",
+    "spice_level": "medium",
+    "description": "Poblano peppers stuffed with cheese and meat, coated in egg batter and lightly fried."
+  },
+  {
+    "name": "Carne Asada Tacos",
+    "cuisine": "mexican",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Grilled and sliced marinated beef served in soft corn tortillas with fresh cilantro and onion."
+  },
+  {
+    "name": "Spicy Chorizo Tacos",
+    "cuisine": "mexican",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Crispy spiced pork chorizo served in small corn tortillas with salsa and lime."
+  },
+  {
+    "name": "Spicy Jalape\u00f1o Quesadillas",
+    "cuisine": "mexican",
+    "dietary": "vegetarian",
+    "spice_level": "spicy",
+    "description": "Crispy flour tortillas filled with melted cheese and fresh jalape\u00f1os for a spicy kick."
+  },
+  {
+    "name": "Vegetarian Stuffed Peppers",
+    "cuisine": "mexican",
+    "dietary": "vegetarian",
+    "spice_level": "mild",
+    "description": "Bell peppers filled with a mild mixture of rice, black beans, corn, and melted cheese."
+  },
+  {
+    "name": "Black Bean Tacos",
+    "cuisine": "mexican",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Soft tacos filled with seasoned black beans, shredded cabbage, and a tangy lime crema."
+  },
+  {
+    "name": "Vegetarian Enchiladas",
+    "cuisine": "mexican",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Corn tortillas filled with vegetables and cheese, baked in a mildly spiced tomato enchilada sauce."
+  },
+  {
+    "name": "Vegetarian Mexican Casserole",
+    "cuisine": "mexican",
+    "dietary": "vegetarian",
+    "spice_level": "mild",
+    "description": "A hearty baked dish layered with tortillas, beans, corn, and cheese in a mild tomato sauce."
+  },
+  {
+    "name": "Tofu Burrito Bowl",
+    "cuisine": "mexican",
+    "dietary": "vegan",
+    "spice_level": "medium",
+    "description": "A nourishing bowl with seasoned tofu, rice, black beans, salsa, and guacamole."
+  },
+  {
+    "name": "Black Bean Taco Soup",
+    "cuisine": "mexican",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "A bold and spicy plant-based soup loaded with black beans, tomatoes, and taco seasonings."
+  },
+  {
+    "name": "Vegan Chickpea Tacos",
+    "cuisine": "mexican",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "Soft tacos filled with gently spiced chickpeas, fresh salsa, and avocado slices."
+  },
+  {
+    "name": "Vegan Mexican Menudo",
+    "cuisine": "mexican",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "A fiery vegan take on the traditional Mexican stew using hominy and bold chili broth."
+  },
+  {
+    "name": "Vegan Tex Mex Bowl",
+    "cuisine": "mexican",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "A spicy Tex-Mex inspired bowl with seasoned beans, rice, roasted vegetables, and salsa."
+  },
+  {
+    "name": "Spaghetti Carbonara",
+    "cuisine": "italian",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Classic Roman pasta with a creamy egg and Pecorino sauce, pancetta, and black pepper."
+  },
+  {
+    "name": "Spaghetti Bolognese",
+    "cuisine": "italian",
+    "dietary": "omnivore",
+    "spice_level": "medium",
+    "description": "Slow-cooked meat rag\u00f9 with tomatoes and herbs served over spaghetti with Parmesan."
+  },
+  {
+    "name": "Spicy Chicken Cacciatore",
+    "cuisine": "italian",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Hunter-style braised chicken in a robust spicy tomato sauce with olives and capers."
+  },
+  {
+    "name": "Nduja Pasta",
+    "cuisine": "italian",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Pasta tossed with fiery Calabrian nduja sausage spread melted into a rich tomato sauce."
+  },
+  {
+    "name": "Lasagna",
+    "cuisine": "italian",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Layers of pasta, seasoned beef rag\u00f9, creamy b\u00e9chamel, and melted mozzarella baked until golden."
+  },
+  {
+    "name": "Pesto Pasta",
+    "cuisine": "italian",
+    "dietary": "vegetarian",
+    "spice_level": "mild",
+    "description": "Pasta tossed in a fragrant sauce of fresh basil, pine nuts, Parmesan, and olive oil."
+  },
+  {
+    "name": "Vegetarian Minestrone",
+    "cuisine": "italian",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "A hearty Italian vegetable soup with cannellini beans, seasonal vegetables, and pasta."
+  },
+  {
+    "name": "Gnocchi with Pomodoro Sauce",
+    "cuisine": "italian",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Soft potato gnocchi served in a simple, mildly seasoned fresh tomato sauce with basil."
+  },
+  {
+    "name": "Eggplant Parmesan",
+    "cuisine": "italian",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Breaded and fried eggplant layered with tomato sauce and mozzarella, baked until bubbly."
+  },
+  {
+    "name": "Spaghetti Cacio e Pepe",
+    "cuisine": "italian",
+    "dietary": "vegetarian",
+    "spice_level": "spicy",
+    "description": "A bold Roman pasta dish with Pecorino Romano cheese and a generous amount of cracked black pepper."
+  },
+  {
+    "name": "Penne Arrabbiata",
+    "cuisine": "italian",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "Penne pasta in a fiery tomato sauce made with garlic and dried red chili flakes."
+  },
+  {
+    "name": "Vegan Mushroom Risotto",
+    "cuisine": "italian",
+    "dietary": "vegan",
+    "spice_level": "medium",
+    "description": "Creamy Arborio rice slow-cooked with mixed mushrooms, white wine, and vegetable broth."
+  },
+  {
+    "name": "Italian Garbanzo Bean Soup",
+    "cuisine": "italian",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "A comforting Italian soup with chickpeas, tomatoes, rosemary, and a drizzle of olive oil."
+  },
+  {
+    "name": "Panzanella",
+    "cuisine": "italian",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "A rustic Tuscan bread salad with ripe tomatoes, cucumber, basil, and a red wine vinaigrette."
+  },
+  {
+    "name": "Chickpea Pasta with Spinach",
+    "cuisine": "italian",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "A spicy and protein-rich pasta dish combining chickpeas, fresh spinach, garlic, and chili oil."
+  },
+  {
+    "name": "Greek Lemon Chicken",
+    "cuisine": "mediterranean",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Roasted chicken and potatoes marinated in lemon juice, garlic, and oregano."
+  },
+  {
+    "name": "Mediterranean Lamb and Lentil Stew",
+    "cuisine": "mediterranean",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "A warming stew of tender lamb, green lentils, tomatoes, and aromatic Mediterranean spices."
+  },
+  {
+    "name": "Spicy Harissa Chicken Kebabs",
+    "cuisine": "mediterranean",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Grilled chicken skewers marinated in fiery North African harissa paste with lemon."
+  },
+  {
+    "name": "Shrimp Fra Diavolo",
+    "cuisine": "mediterranean",
+    "dietary": "omnivore",
+    "spice_level": "medium",
+    "description": "Succulent shrimp in a spiced tomato and white wine sauce served over pasta or with crusty bread."
+  },
+  {
+    "name": "Grilled Octopus",
+    "cuisine": "mediterranean",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Tender grilled octopus drizzled with olive oil, lemon, and fresh herbs."
+  },
+  {
+    "name": "Shakshuka",
+    "cuisine": "mediterranean",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Eggs poached in a warmly spiced tomato and pepper sauce, served with crusty bread."
+  },
+  {
+    "name": "Greek Salad with Couscous and Feta",
+    "cuisine": "mediterranean",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "A refreshing salad of couscous, olives, cucumber, tomatoes, and crumbled spicy feta cheese."
+  },
+  {
+    "name": "Spanakopita",
+    "cuisine": "mediterranean",
+    "dietary": "vegetarian",
+    "spice_level": "mild",
+    "description": "Flaky phyllo pastry filled with a savory mixture of spinach, feta cheese, and herbs."
+  },
+  {
+    "name": "Menemen",
+    "cuisine": "mediterranean",
+    "dietary": "vegetarian",
+    "spice_level": "spicy",
+    "description": "A spicy Turkish scrambled egg dish cooked with tomatoes, green peppers, and chili flakes."
+  },
+  {
+    "name": "Sweet Potato Spinach Halloumi Curry",
+    "cuisine": "mediterranean",
+    "dietary": "vegetarian",
+    "spice_level": "spicy",
+    "description": "A vibrant curry with sweet potato, fresh spinach, and pan-fried halloumi in a spiced coconut sauce."
+  },
+  {
+    "name": "Red Lentil Soup",
+    "cuisine": "mediterranean",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "A bold and warming soup of red lentils, cumin, and chili with a squeeze of fresh lemon."
+  },
+  {
+    "name": "Falafel",
+    "cuisine": "mediterranean",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "Crispy fried chickpea patties seasoned with herbs and spices, served with tahini sauce."
+  },
+  {
+    "name": "Eggplant Caponata",
+    "cuisine": "mediterranean",
+    "dietary": "vegan",
+    "spice_level": "medium",
+    "description": "A Sicilian sweet and sour relish of eggplant, tomatoes, olives, capers, and celery."
+  },
+  {
+    "name": "Stuffed Grape Leaves",
+    "cuisine": "mediterranean",
+    "dietary": "vegan",
+    "spice_level": "medium",
+    "description": "Tender grape leaves filled with seasoned rice, fresh herbs, and a squeeze of lemon juice."
+  },
+  {
+    "name": "Spicy Moroccan Harira",
+    "cuisine": "mediterranean",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "A hearty Moroccan soup with lentils, chickpeas, tomatoes, and warming spices like cinnamon and cumin."
+  },
+  {
+    "name": "Pad Thai",
+    "cuisine": "thai",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Stir-fried rice noodles with egg, shrimp, bean sprouts, and crushed peanuts in a tangy tamarind sauce."
+  },
+  {
+    "name": "Pad Krapow",
+    "cuisine": "thai",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "A fiery Thai stir-fry of minced chicken with holy basil, garlic, and chili served over rice with a fried egg."
+  },
+  {
+    "name": "Vegetable Fried Rice",
+    "cuisine": "thai",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Thai-style fried rice with egg, mixed vegetables, and a mildly spiced seasoning sauce."
+  },
+  {
+    "name": "Vegan Red Curry with Tofu",
+    "cuisine": "thai",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "Silken tofu and vegetables simmered in a spicy Thai red curry paste and creamy coconut milk."
+  },
+  {
+    "name": "Spicy Korean Marinated Pork",
+    "cuisine": "korean",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Thinly sliced pork belly marinated in a spicy gochujang and sesame sauce, grilled until caramelised."
+  },
+  {
+    "name": "Bibimbap",
+    "cuisine": "korean",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "A Korean rice bowl topped with seasoned vegetables, a fried egg, and a dollop of gochujang sauce."
+  },
+  {
+    "name": "Korean Japchae",
+    "cuisine": "korean",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "Glass noodles stir-fried with colourful vegetables and seasoned with soy sauce and sesame oil."
+  },
+  {
+    "name": "Gochujang Fried Rice",
+    "cuisine": "korean",
+    "dietary": "vegan",
+    "spice_level": "medium",
+    "description": "Fried rice tossed with gochujang paste, vegetables, and sesame oil for a savoury and slightly spicy dish."
+  },
+  {
+    "name": "Mapo Tofu",
+    "cuisine": "chinese",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Silken tofu and minced pork in a bold Sichuan sauce of fermented bean paste, chili oil, and Sichuan pepper."
+  },
+  {
+    "name": "Lo Mein",
+    "cuisine": "chinese",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Soft egg noodles stir-fried with colourful vegetables in a mildly seasoned soy and oyster sauce."
+  },
+  {
+    "name": "Baby Bok Choy with Mushrooms",
+    "cuisine": "chinese",
+    "dietary": "vegetarian",
+    "spice_level": "mild",
+    "description": "Tender baby bok choy and shiitake mushrooms stir-fried in a mild savory mushroom sauce with garlic and ginger."
+  },
+  {
+    "name": "Cabbage Stir Fry",
+    "cuisine": "chinese",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "Quickly stir-fried shredded cabbage with garlic, ginger, and a simple soy sauce seasoning."
+  },
+  {
+    "name": "Chicken Teriyaki",
+    "cuisine": "japanese",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Grilled chicken glazed with a sweet and savoury teriyaki sauce, served with steamed rice."
+  },
+  {
+    "name": "Mushroom Ramen",
+    "cuisine": "japanese",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "A rich vegetarian ramen with a miso-based broth, shiitake mushrooms, soft-boiled egg, and noodles."
+  },
+  {
+    "name": "Curry Udon",
+    "cuisine": "japanese",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "Thick udon noodles served in a spicy Japanese curry broth with tofu and seasonal vegetables."
+  },
+  {
+    "name": "Butter Chicken",
+    "cuisine": "indian",
+    "dietary": "omnivore",
+    "spice_level": "mild",
+    "description": "Tender chicken pieces simmered in a rich, creamy tomato-based sauce with aromatic spices."
+  },
+  {
+    "name": "Chicken Tikka Masala",
+    "cuisine": "indian",
+    "dietary": "omnivore",
+    "spice_level": "medium",
+    "description": "Grilled chicken pieces in a mildly spiced creamy tomato and yoghurt sauce."
+  },
+  {
+    "name": "Chicken Vindaloo",
+    "cuisine": "indian",
+    "dietary": "omnivore",
+    "spice_level": "medium",
+    "description": "A tangy Goan-style curry with chicken marinated in vinegar and a blend of warm spices."
+  },
+  {
+    "name": "Chicken Biryani",
+    "cuisine": "indian",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Fragrant basmati rice layered with spiced chicken, caramelised onions, and saffron."
+  },
+  {
+    "name": "Black Pepper Goat Curry",
+    "cuisine": "indian",
+    "dietary": "omnivore",
+    "spice_level": "spicy",
+    "description": "Slow-cooked goat in a bold, peppery South Indian curry sauce with coconut and whole spices."
+  },
+  {
+    "name": "Saag Paneer",
+    "cuisine": "indian",
+    "dietary": "vegetarian",
+    "spice_level": "mild",
+    "description": "Fresh cheese cubes in a smooth, gently spiced spinach and cream sauce."
+  },
+  {
+    "name": "Palak Paneer",
+    "cuisine": "indian",
+    "dietary": "vegetarian",
+    "spice_level": "spicy",
+    "description": "Cottage cheese in a vibrant, boldly spiced spinach sauce with ginger and chili."
+  },
+  {
+    "name": "Chana Masala",
+    "cuisine": "indian",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Chickpeas cooked in a tangy tomato and onion gravy with cumin, coriander, and garam masala."
+  },
+  {
+    "name": "Paneer Tikka Masala",
+    "cuisine": "indian",
+    "dietary": "vegetarian",
+    "spice_level": "medium",
+    "description": "Grilled paneer cubes in a mildly spiced, creamy tomato-based masala sauce."
+  },
+  {
+    "name": "Aloo Gobi",
+    "cuisine": "indian",
+    "dietary": "vegetarian",
+    "spice_level": "mild",
+    "description": "A comforting dry curry of potatoes and cauliflower with turmeric, cumin, and coriander."
+  },
+  {
+    "name": "Aloo Matar",
+    "cuisine": "indian",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "A simple and warming vegan curry of potatoes and green peas in a spiced tomato sauce."
+  },
+  {
+    "name": "Baingan Bharta",
+    "cuisine": "indian",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "Smoky roasted eggplant mashed with tomatoes, onions, and bold Indian spices."
+  },
+  {
+    "name": "Gobi Manchurian",
+    "cuisine": "indian",
+    "dietary": "vegan",
+    "spice_level": "mild",
+    "description": "Crispy cauliflower florets tossed in a tangy, mildly spiced Indo-Chinese sauce."
+  },
+  {
+    "name": "Vegan Khara Pongal",
+    "cuisine": "indian",
+    "dietary": "vegan",
+    "spice_level": "spicy",
+    "description": "A spiced South Indian rice and lentil dish tempered with black pepper, cumin, and curry leaves."
+  },
+  {
+    "name": "Vegan Ven Pongal",
+    "cuisine": "indian",
+    "dietary": "vegan",
+    "spice_level": "medium",
+    "description": "A creamy South Indian rice and moong dal porridge seasoned with ginger, cumin, and ghee-free tempering."
+  }
 ]
