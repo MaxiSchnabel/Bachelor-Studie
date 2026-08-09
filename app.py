@@ -115,6 +115,26 @@ def admin_logout():
     return redirect(url_for("admin"))
 
 
+@app.route("/admin/clear-data")
+def admin_clear_data():
+    """Delete all study data — participants, responses, demographics."""
+    if not session.get("admin"):
+        return redirect(url_for("admin"))
+    from database import get_db
+    conn = get_db()
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM responses")
+        cur.execute("DELETE FROM demographics")
+        cur.execute("DELETE FROM participants")
+        conn.commit()
+        return "All data cleared. <a href=/admin>Back to admin</a>"
+    except Exception as e:
+        return f"Error: {e}", 500
+    finally:
+        conn.close()
+
+
 @app.route("/admin/reset-db")
 def admin_reset_db():
     """Delete and recreate the local SQLite database (only works without PostgreSQL)."""
