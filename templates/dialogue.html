@@ -211,7 +211,10 @@ function updateSummary(pref) {
 
   if (pref.dietary) {
     const el = document.getElementById("tag-dietary");
-    el.textContent = "Diet: " + (labels.dietary[pref.dietary] || pref.dietary);
+    let dietLabel = labels.dietary[pref.dietary] || pref.dietary;
+    if (pref.meat_pref === "meat") dietLabel += " (meat)"
+    else if (pref.meat_pref === "mix") dietLabel += " (mix)"
+    el.textContent = "Diet: " + dietLabel;
     el.classList.add("filled");
   }
   if (pref.cuisine) {

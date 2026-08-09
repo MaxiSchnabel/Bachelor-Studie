@@ -327,6 +327,7 @@ def pref_state(pref):
         "dietary":     pref.get("dietary"),
         "cuisine":     pref.get("cuisine"),
         "spice_level": pref.get("spice_level"),
+
     }
 
 
@@ -336,145 +337,127 @@ def chat():
 
     data         = request.get_json()
     user_message = data.get("message", "").strip()
-
     if not user_message:
         return jsonify({"error": "empty message"}), 400
 
     pref = session.get("participant_pref", {})
+    t    = user_message.lower()
 
-    # Extract with negation awareness and correction detection
+    ASIAN_SUB_MAP = {
+        "chinese":"Chinese","cantonese":"Cantonese","szechuan":"Szechuan",
+        "sichuan":"Szechuan","japanese":"Japanese","sushi":"Japanese",
+        "ramen":"Japanese","thai":"Thai","pad thai":"Thai",
+        "korean":"Korean","bibimbap":"Korean","vietnamese":"Vietnamese","pho":"Vietnamese",
+    }
+    NO_PREF_ASIAN = ["no preference","no specific","any","either","whatever",
+                     "no strong","don't mind","dont mind"]
+
+    # Extract preferences freely
     extracted, corrected = extract_preferences(user_message, pref)
 
-    # Asian sub-cuisine refinement
-    # Apply extracted values (corrections overwrite old values)
     pref.update(extracted)
 
-    # Asian sub-cuisine refinement — checked AFTER update so cuisine=asian is set
-    asian_keywords = ["chinese", "japanese", "thai", "korean", "vietnamese",
-                      "cantonese", "szechuan", "sichuan", "sushi",
-                      "ramen", "pho", "pad thai", "bibimbap"]
+    # Asian sub-cuisine detection
     if pref.get("cuisine") == "asian":
-        if any(k in user_message.lower() for k in asian_keywords):
-            pref["asian_refined"] = True
-        elif extracted.get("cuisine") == "asian":
+        if "asian_refined" not in pref:
             pref["asian_refined"] = False
+        if not pref.get("asian_refined"):
+            for kw, label in ASIAN_SUB_MAP.items():
+                if kw in t:
+                    pref["asian_refined"] = True
+                    pref["asian_sub"] = label
+                    break
+            if not pref.get("asian_refined") and any(p in t for p in NO_PREF_ASIAN):
+                pref["asian_refined"] = True
 
-    session["participant_pref"] = pref
-
-    all_filled = all(k in pref for k in ["dietary", "cuisine", "spice_level"])
-
-    # ── Sub-cuisine detection ─────────────────────────────────────────────────
-    asian_sub_map = {
-        "chinese": "Chinese", "cantonese": "Cantonese",
-        "szechuan": "Szechuan", "sichuan": "Szechuan",
-        "japanese": "Japanese", "sushi": "Japanese",
-        "ramen": "Japanese", "thai": "Thai", "pad thai": "Thai",
-        "korean": "Korean", "bibimbap": "Korean",
-        "vietnamese": "Vietnamese", "pho": "Vietnamese",
-    }
-    t_lower = user_message.lower()
-
-    # Update asian_sub if cuisine is asian and user names a sub-type
-    if pref.get("cuisine") == "asian" and pref.get("asian_refined"):
-        for kw, label in asian_sub_map.items():
-            if kw in t_lower:
-                pref["asian_sub"] = label
-                session["participant_pref"] = pref
-                break
-
-    # If cuisine changed away from asian, clear asian meta-data immediately
     if "cuisine" in corrected and pref.get("cuisine") != "asian":
         pref.pop("asian_sub", None)
         pref.pop("asian_refined", None)
-        session["participant_pref"] = pref
 
-    # ── Helper: build cuisine label from current pref ─────────────────────────
-    def get_cuisine_label(p):
-        if p["cuisine"] == "any":
-            return "no specific cuisine preference"
-        elif p["cuisine"] == "asian" and p.get("asian_sub"):
-            return p["asian_sub"] + " cuisine"
-        else:
-            return p["cuisine"].capitalize() + " cuisine"
+    session["participant_pref"] = pref
 
-    # ── Build reply ───────────────────────────────────────────────────────────
+    # All filled check
+    required = ["dietary","cuisine","spice_level"]
+    if pref.get("cuisine") == "asian":
+        required.append("asian_refined")
+    all_filled = all(k in pref for k in required) and pref.get("asian_refined", True)
+
+    # Build ack
     ack_parts = []
-
-    # Acknowledge corrections — use updated cuisine label
     if corrected:
-        slot_names = {"dietary": "dietary preference",
-                      "cuisine": "cuisine preference",
-                      "spice_level": "spice preference"}
-        corrected_labels = [slot_names.get(s, s) for s in corrected]
-        base = f"No problem, I've updated your {' and '.join(corrected_labels)}."
-        # If cuisine was corrected, mention the new value explicitly
+        slot_names = {"dietary":"dietary preference","cuisine":"cuisine preference","spice_level":"spice preference"}
+        base = "No problem, I've updated your " + " and ".join(slot_names.get(s,s) for s in corrected) + "."
         if "cuisine" in corrected:
-            base += f" You now prefer {get_cuisine_label(pref)}."
+            if pref["cuisine"] == "any":
+                cl = "no specific cuisine preference"
+            elif pref["cuisine"] == "asian" and pref.get("asian_sub"):
+                cl = pref["asian_sub"] + " cuisine"
+            else:
+                cl = pref["cuisine"].capitalize() + " cuisine"
+            base += " You now prefer " + cl + "."
         ack_parts.append(base)
 
-    # Acknowledge sub-cuisine answer
-    if (pref.get("asian_refined") and pref.get("asian_sub")
-            and "cuisine" not in corrected
-            and any(kw in t_lower for kw in asian_sub_map)):
-        ack_parts.append(f"{pref['asian_sub']} cuisine — noted.")
-        newly = {k: v for k, v in extracted.items()
-                 if k not in corrected and k != "cuisine"}
-    else:
-        newly = {k: v for k, v in extracted.items() if k not in corrected}
-
     ack_map = {
-        "dietary":     {"vegan": "Got it, you're vegan.",
-                        "vegetarian": "Got it, vegetarian.",
-                        "omnivore": "Got it, no dietary restrictions."},
-        "cuisine":     lambda v: ("Any cuisine works — noted."
-                                  if v == "any"
-                                  else f"{v.capitalize()} cuisine — noted."),
-        "spice_level": {"mild":   "Noted, you prefer mild food.",
-                        "medium": "Medium spice — noted.",
-                        "hot":    "You like it hot — noted."},
+        "dietary":    {"vegan":"Got it, you're vegan.","vegetarian":"Got it, vegetarian.",
+                       "omnivore":"Got it, no dietary restrictions."},
+        "cuisine":    lambda v: ("Any cuisine works — noted." if v=="any" else v.capitalize()+" cuisine — noted."),
+        "spice_level":{"mild":"Noted, you prefer mild food.","medium":"Medium spice — noted.",
+                       "hot":"You like it hot — noted."},
+
     }
+    newly = {k:v for k,v in extracted.items() if k not in corrected and k != "asian_refined"}
+    if pref.get("asian_sub") and "cuisine" in newly and extracted.get("cuisine") == "asian":
+        del newly["cuisine"]
     for slot, val in newly.items():
-        mapping = ack_map.get(slot)
+        if slot not in ack_map:
+            continue
+        mapping = ack_map[slot]
         if isinstance(mapping, dict):
-            ack_parts.append(mapping.get(val, ""))
+            ack_parts.append(mapping.get(val,""))
         elif callable(mapping):
             ack_parts.append(mapping(val))
 
+    # Asian sub ack
+    if pref.get("asian_refined") and pref.get("asian_sub"):
+        for kw, label in ASIAN_SUB_MAP.items():
+            if kw in t and label == pref.get("asian_sub"):
+                ack_parts.append(label + " cuisine — noted.")
+                break
+
+    # Next question — immediate follow-ups take priority
+    next_q = None
+    if ("cuisine" in extracted and extracted["cuisine"] == "asian" and not pref.get("asian_refined")) or (pref.get("cuisine") == "asian" and not pref.get("asian_refined")):
+        next_q = "Within Asian cuisine, do you have a preference — for example Chinese, Japanese, Thai, or Korean? If not, just say no preference."
+    elif "dietary" not in pref:
+        next_q = "Do you follow any particular dietary lifestyle? For example, are you omnivore, vegetarian, or vegan?"
+    elif "cuisine" not in pref:
+        next_q = "Which type of cuisine do you prefer? For example Asian, Italian, Mexican, Indian, Mediterranean, or American?"
+    elif "spice_level" not in pref:
+        next_q = "How spicy do you like your food — mild, medium, or hot?"
+
+    # Build reply
     if all_filled:
-        save_preferences(
-            session["pid"],
-            pref["dietary"],
-            pref["cuisine"],
-            pref["spice_level"]
-        )
-        cuisine_label = get_cuisine_label(pref)
-        confirm = (
-            " ".join(p for p in ack_parts if p) + " " if ack_parts else ""
-        ) + (
-            f"I now have all your preferences: {pref['dietary']} diet, "
-            f"{cuisine_label}, and {pref['spice_level']} spice. "
-            f"I'll use this to find the best recipes for your group!"
-        )
-        return jsonify({"reply": confirm.strip(), "done": True,
-                        "pref": pref_state(pref)})
+        save_preferences(session["pid"], pref["dietary"], pref["cuisine"], pref["spice_level"])
+        if pref["cuisine"] == "any":
+            cl = "no specific cuisine preference"
+        elif pref["cuisine"] == "asian" and pref.get("asian_sub"):
+            cl = pref["asian_sub"] + " cuisine"
+        else:
+            cl = pref["cuisine"].capitalize() + " cuisine"
+        ack = " ".join(p for p in ack_parts if p)
+        confirm = (ack + " " if ack else "") + (
+            "I now have all your preferences: " + pref["dietary"] + " diet" +
+            ", " + cl + ", and " + pref["spice_level"] + " spice. "
+            "I'll use this to find the best recipes for your group!")
+        return jsonify({"reply": confirm.strip(), "done": True, "pref": pref_state(pref)})
 
-    # Not done yet — show what we have and ask next question
-    next_q = next_question(pref)
-
-    if not extracted and not corrected and not pref.get("asian_refined"):
-        hint = "I didn't quite catch that. "
-        reply = hint + (next_q or "Could you tell me a bit more?")
+    if not extracted and not corrected:
+        reply = "I didn't quite catch that. " + (next_q or "Could you tell me a bit more?")
     else:
         ack = " ".join(p for p in ack_parts if p)
+        reply = (ack + " " + next_q).strip() if next_q else ack
 
-        if next_q:
-            reply = f"{ack} {next_q}".strip()
-        else:
-            reply = ack
-
-    return jsonify({"reply": reply, "done": False,
-                    "pref": pref_state(pref)})
-
+    return jsonify({"reply": reply, "done": False, "pref": pref_state(pref)})
 
 @app.route("/personas")
 def personas():
@@ -495,6 +478,12 @@ def get_recommendation():
     strategy         = session["strategy_order"][round_num]
     exclude          = session.get("shown_recipes", [])
     participant_pref = session.get("participant_pref", {})
+
+    # Normalize Asian sub-cuisines to "asian" for matching with dataset
+    ASIAN_SUBS = {"thai", "korean", "chinese", "japanese"}
+    if participant_pref.get("cuisine") in ASIAN_SUBS:
+        participant_pref = dict(participant_pref)
+        participant_pref["cuisine"] = "asian"
 
     results = recommend(participant_pref, PERSONAS, strategy, n=1, exclude=exclude)
     recipes = [r for r, score, scores in results]
@@ -569,51 +558,56 @@ def done():
 
 @app.route("/test")
 def test_recommend():
-    """Quick recommendation test — skip questionnaire. Admin only."""
     from aggregation import recommend as rec
-    dietary  = request.args.get("dietary",  "omnivore")
-    cuisine  = request.args.get("cuisine",  "italian")
-    spice    = request.args.get("spice",    "medium")
-    strategy = request.args.get("strategy", "additive")
 
+    dietary   = request.args.get("dietary",   "omnivore")
+    cuisine   = request.args.get("cuisine",   "italian")
+    spice     = request.args.get("spice",     "medium")
     pref = {"dietary": dietary, "cuisine": cuisine, "spice_level": spice}
-    results = rec(pref, PERSONAS, strategy, n=1)
-    r, score, scores = results[0]
 
-    return f"""
-    <style>body{{font-family:sans-serif;padding:40px;max-width:600px}}</style>
-    <h2>Test Recommendation</h2>
-    <p><b>Your prefs:</b> {dietary} / {cuisine} / {spice}</p>
-    <p><b>Strategy:</b> {strategy}</p>
-    <hr>
-    <h3>{r["name"]}</h3>
-    <p>{r["description"]}</p>
-    <p><b>Cuisine:</b> {r["cuisine"]} | <b>Dietary:</b> {r["dietary"]} | <b>Spice:</b> {r["spice_level"]}</p>
-    <p><b>Scores:</b> User={scores[0]}, Alex={scores[1]}, Sam={scores[2]} | Total={score}</p>
-    <hr>
-    <form method=get>
-      Dietary: <select name=dietary>
-        <option {"selected" if dietary=="omnivore" else ""}>omnivore</option>
-        <option {"selected" if dietary=="vegetarian" else ""}>vegetarian</option>
-        <option {"selected" if dietary=="vegan" else ""}>vegan</option>
-      </select>
-      Cuisine: <select name=cuisine>
-        {" ".join(f"<option {'selected' if cuisine==c else ''}>{c}</option>" for c in ["mexican","italian","mediterranean","indian","thai","korean","chinese","japanese","any"])}
-      </select>
-      Spice: <select name=spice>
-        <option {"selected" if spice=="mild" else ""}>mild</option>
-        <option {"selected" if spice=="medium" else ""}>medium</option>
-        <option {"selected" if spice=="hot" else ""}>hot</option>
-      </select>
-      Strategy: <select name=strategy>
-        <option {"selected" if strategy=="additive" else ""}>additive</option>
-        <option {"selected" if strategy=="least_misery" else ""}>least_misery</option>
-        <option {"selected" if strategy=="majority_voting" else ""}>majority_voting</option>
-      </select>
-      <button type=submit>Test</button>
-    </form>
-    """
+    rows = ""
+    for strat in ["additive", "least_misery", "majority_voting"]:
+        r, score, scores = rec(pref, PERSONAS, strat, n=1)[0]
+        rows += (
+            "<tr>"
+            + f"<td><b>{strat}</b></td>"
+            + f"<td>{r['name']}</td>"
+            + f"<td>{r['cuisine']}</td>"
+            + f"<td>{r['dietary']}</td>"
+            + f"<td>{r['spice_level']}</td>"
+            + f"<td>{scores[0]} / {scores[1]} / {scores[2]}</td>"
+            + "</tr>"
+        )
 
+    def sel(val, cur):
+        return " selected" if val == cur else ""
+
+    cuisine_opts = "".join(
+        "<option value='" + c + "'" + sel(c, cuisine) + ">" + c.capitalize() + "</option>"
+        for c in ["mexican","italian","mediterranean","indian","asian","any"]
+    )
+
+    html  = "<style>body{font-family:sans-serif;padding:30px;max-width:950px}"
+    html += "table{border-collapse:collapse;width:100%;margin-top:16px}"
+    html += "th,td{border:1px solid #ddd;padding:8px 12px;text-align:left}"
+    html += "th{background:#f0f0f0}select,button{margin:4px;padding:6px 10px}</style>"
+    html += "<h2>Recommendation Test</h2>"
+    html += "<p><b>Alex:</b> omnivore / any / spicy &nbsp; <b>Sam:</b> omnivore / any / mild</p>"
+    html += "<table><tr><th>Strategy</th><th>Recipe</th><th>Cuisine</th><th>Dietary</th><th>Spice</th><th>Scores U/A/S</th></tr>"
+    html += rows + "</table><hr><form method=get>"
+    html += "Dietary: <select name=dietary onchange='this.form.submit()'>"
+    html += "<option value='omnivore'" + sel("omnivore", dietary) + ">Omnivore</option>"
+    html += "<option value='vegetarian'" + sel("vegetarian", dietary) + ">Vegetarian</option>"
+    html += "<option value='vegan'" + sel("vegan", dietary) + ">Vegan</option>"
+    html += "</select> &nbsp;"
+
+    html += "Cuisine: <select name=cuisine>" + cuisine_opts + "</select> &nbsp;"
+    html += "Spice: <select name=spice>"
+    html += "<option value='mild'" + sel("mild", spice) + ">Mild</option>"
+    html += "<option value='medium'" + sel("medium", spice) + ">Medium</option>"
+    html += "<option value='hot'" + sel("hot", spice) + ">Hot</option>"
+    html += "</select> &nbsp;<button type=submit>Test</button></form>"
+    return html
 
 if __name__ == "__main__":
     app.run(debug=True)
