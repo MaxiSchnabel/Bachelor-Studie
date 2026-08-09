@@ -316,108 +316,123 @@
   },
   {
     "name": "Pad Thai",
-    "cuisine": "thai",
+    "cuisine": "asian",
     "dietary": "omnivore",
     "spice_level": "mild",
-    "description": "Stir-fried rice noodles with egg, shrimp, bean sprouts, and crushed peanuts in a tangy tamarind sauce."
+    "description": "Stir-fried rice noodles with egg, shrimp, bean sprouts, and crushed peanuts in a tangy tamarind sauce.",
+    "sub_cuisine": "thai"
   },
   {
     "name": "Pad Krapow",
-    "cuisine": "thai",
+    "cuisine": "asian",
     "dietary": "omnivore",
     "spice_level": "spicy",
-    "description": "A fiery Thai stir-fry of minced chicken with holy basil, garlic, and chili served over rice with a fried egg."
+    "description": "A fiery Thai stir-fry of minced chicken with holy basil, garlic, and chili served over rice with a fried egg.",
+    "sub_cuisine": "thai"
   },
   {
     "name": "Vegetable Fried Rice",
-    "cuisine": "thai",
+    "cuisine": "asian",
     "dietary": "vegetarian",
     "spice_level": "medium",
-    "description": "Thai-style fried rice with egg, mixed vegetables, and a mildly spiced seasoning sauce."
+    "description": "Thai-style fried rice with egg, mixed vegetables, and a mildly spiced seasoning sauce.",
+    "sub_cuisine": "thai"
   },
   {
     "name": "Vegan Red Curry with Tofu",
-    "cuisine": "thai",
+    "cuisine": "asian",
     "dietary": "vegan",
     "spice_level": "spicy",
-    "description": "Silken tofu and vegetables simmered in a spicy Thai red curry paste and creamy coconut milk."
+    "description": "Silken tofu and vegetables simmered in a spicy Thai red curry paste and creamy coconut milk.",
+    "sub_cuisine": "thai"
   },
   {
     "name": "Spicy Korean Marinated Pork",
-    "cuisine": "korean",
+    "cuisine": "asian",
     "dietary": "omnivore",
     "spice_level": "spicy",
-    "description": "Thinly sliced pork belly marinated in a spicy gochujang and sesame sauce, grilled until caramelised."
+    "description": "Thinly sliced pork belly marinated in a spicy gochujang and sesame sauce, grilled until caramelised.",
+    "sub_cuisine": "korean"
   },
   {
     "name": "Bibimbap",
-    "cuisine": "korean",
+    "cuisine": "asian",
     "dietary": "vegetarian",
     "spice_level": "medium",
-    "description": "A Korean rice bowl topped with seasoned vegetables, a fried egg, and a dollop of gochujang sauce."
+    "description": "A Korean rice bowl topped with seasoned vegetables, a fried egg, and a dollop of gochujang sauce.",
+    "sub_cuisine": "korean"
   },
   {
     "name": "Korean Japchae",
-    "cuisine": "korean",
+    "cuisine": "asian",
     "dietary": "vegan",
     "spice_level": "mild",
-    "description": "Glass noodles stir-fried with colourful vegetables and seasoned with soy sauce and sesame oil."
+    "description": "Glass noodles stir-fried with colourful vegetables and seasoned with soy sauce and sesame oil.",
+    "sub_cuisine": "korean"
   },
   {
     "name": "Gochujang Fried Rice",
-    "cuisine": "korean",
+    "cuisine": "asian",
     "dietary": "vegan",
     "spice_level": "medium",
-    "description": "Fried rice tossed with gochujang paste, vegetables, and sesame oil for a savoury and slightly spicy dish."
+    "description": "Fried rice tossed with gochujang paste, vegetables, and sesame oil for a savoury and slightly spicy dish.",
+    "sub_cuisine": "korean"
   },
   {
     "name": "Mapo Tofu",
-    "cuisine": "chinese",
+    "cuisine": "asian",
     "dietary": "omnivore",
     "spice_level": "spicy",
-    "description": "Silken tofu and minced pork in a bold Sichuan sauce of fermented bean paste, chili oil, and Sichuan pepper."
+    "description": "Silken tofu and minced pork in a bold Sichuan sauce of fermented bean paste, chili oil, and Sichuan pepper.",
+    "sub_cuisine": "chinese"
   },
   {
     "name": "Lo Mein",
-    "cuisine": "chinese",
+    "cuisine": "asian",
     "dietary": "vegetarian",
     "spice_level": "medium",
-    "description": "Soft egg noodles stir-fried with colourful vegetables in a mildly seasoned soy and oyster sauce."
+    "description": "Soft egg noodles stir-fried with colourful vegetables in a mildly seasoned soy and oyster sauce.",
+    "sub_cuisine": "chinese"
   },
   {
     "name": "Baby Bok Choy with Mushrooms",
-    "cuisine": "chinese",
+    "cuisine": "asian",
     "dietary": "vegetarian",
     "spice_level": "mild",
-    "description": "Tender baby bok choy and shiitake mushrooms stir-fried in a mild savory mushroom sauce with garlic and ginger."
+    "description": "Tender baby bok choy and shiitake mushrooms stir-fried in a mild savory mushroom sauce with garlic and ginger.",
+    "sub_cuisine": "chinese"
   },
   {
     "name": "Cabbage Stir Fry",
-    "cuisine": "chinese",
+    "cuisine": "asian",
     "dietary": "vegan",
     "spice_level": "mild",
-    "description": "Quickly stir-fried shredded cabbage with garlic, ginger, and a simple soy sauce seasoning."
+    "description": "Quickly stir-fried shredded cabbage with garlic, ginger, and a simple soy sauce seasoning.",
+    "sub_cuisine": "chinese"
   },
   {
     "name": "Chicken Teriyaki",
-    "cuisine": "japanese",
+    "cuisine": "asian",
     "dietary": "omnivore",
     "spice_level": "mild",
-    "description": "Grilled chicken glazed with a sweet and savoury teriyaki sauce, served with steamed rice."
+    "description": "Grilled chicken glazed with a sweet and savoury teriyaki sauce, served with steamed rice.",
+    "sub_cuisine": "japanese"
   },
   {
     "name": "Mushroom Ramen",
-    "cuisine": "japanese",
+    "cuisine": "asian",
     "dietary": "vegetarian",
     "spice_level": "medium",
-    "description": "A rich vegetarian ramen with a miso-based broth, shiitake mushrooms, soft-boiled egg, and noodles."
+    "description": "A rich vegetarian ramen with a miso-based broth, shiitake mushrooms, soft-boiled egg, and noodles.",
+    "sub_cuisine": "japanese"
   },
   {
     "name": "Curry Udon",
-    "cuisine": "japanese",
+    "cuisine": "asian",
     "dietary": "vegan",
     "spice_level": "spicy",
-    "description": "Thick udon noodles served in a spicy Japanese curry broth with tofu and seasonal vegetables."
+    "description": "Thick udon noodles served in a spicy Japanese curry broth with tofu and seasonal vegetables.",
+    "sub_cuisine": "japanese"
   },
   {
     "name": "Butter Chicken",
