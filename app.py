@@ -262,8 +262,6 @@ def extract_preferences(text, current_pref=None):
                           "dal", "biryani", "naan", "tandoori", "samosa"],
         "mediterranean": ["mediterranean", "greek", "turkish", "lebanese",
                           "falafel", "hummus", "kebab", "shawarma", "tzatziki"],
-        "american":      ["american", "burger", "bbq", "barbecue", "wings",
-                          "steak", "ribs", "hot dog", "fried chicken"],
         "indian":        ["indian", "india", "curry", "tikka", "masala",
                           "dal", "biryani", "naan", "tandoori", "samosa",
                           "paneer", "vindaloo", "korma", "chana", "saag"],
@@ -332,7 +330,7 @@ def next_question(pref):
                 "For example, are you omnivore, vegetarian, or vegan?")
     if "cuisine" not in pref:
         return ("Which type of cuisine do you prefer? "
-                "For example Asian, Italian, Mexican, Indian, Mediterranean, or American?")
+                "For example Asian, Italian, Mexican, Indian, or Mediterranean?")
     if pref.get("cuisine") == "asian" and not pref.get("asian_refined"):
         return ("Within Asian cuisine, do you have a preference — "
                 "for example Chinese, Japanese, Thai, or Korean? "                "If not, just say no preference.")
@@ -451,7 +449,7 @@ def chat():
     elif "dietary" not in pref:
         next_q = "Do you follow any particular dietary lifestyle? For example, are you omnivore, vegetarian, or vegan?"
     elif "cuisine" not in pref:
-        next_q = "Which type of cuisine do you prefer? For example Asian, Italian, Mexican, Indian, Mediterranean, or American?"
+        next_q = "Which type of cuisine do you prefer? For example Asian, Italian, Mexican, Indian, or Mediterranean?"
     elif "spice_level" not in pref:
         next_q = "How spicy do you like your food — mild, medium, or hot?"
 
