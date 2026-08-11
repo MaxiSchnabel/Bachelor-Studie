@@ -6,10 +6,13 @@ try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
     POSTGRES = True
-except ImportError:
+except Exception:
     POSTGRES = False
 
-import sqlite3
+try:
+    import sqlite3
+except Exception:
+    pass
 
 # SQLite fallback for local development
 SQLITE_PATH = os.path.join(os.path.dirname(__file__), "study.db")
@@ -25,14 +28,11 @@ STRATEGY_ORDERS = [
 
 
 def get_db():
-    """Return a database connection — always PostgreSQL if DATABASE_URL is set, SQLite only for local dev."""
+    """Return a database connection — PostgreSQL if available, SQLite as fallback."""
     import time
     db_url = os.environ.get("DATABASE_URL")
-    if db_url:
-        if not POSTGRES:
-            raise RuntimeError("psycopg2 not installed but DATABASE_URL is set")
+    if db_url and POSTGRES:
         db_url = db_url.replace("postgres://", "postgresql://", 1)
-        # Retry up to 3 times in case PostgreSQL is not ready yet after sleep
         for attempt in range(3):
             try:
                 conn = psycopg2.connect(db_url, connect_timeout=10)
@@ -42,7 +42,6 @@ def get_db():
                     time.sleep(2)
                 else:
                     raise e
-    # Local development only
     conn = sqlite3.connect(SQLITE_PATH)
     conn.row_factory = sqlite3.Row
     return conn
