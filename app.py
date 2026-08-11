@@ -116,6 +116,23 @@ def admin_logout():
     return redirect(url_for("admin"))
 
 
+@app.route("/admin/delete-sqlite")
+def admin_delete_sqlite():
+    """Delete the local SQLite file so old data cannot be loaded."""
+    if not session.get("admin"):
+        return redirect(url_for("admin"))
+    import os
+    from database import SQLITE_PATH
+    try:
+        if os.path.exists(SQLITE_PATH):
+            os.remove(SQLITE_PATH)
+            return "SQLite file deleted. <a href=/admin>Back to admin</a>"
+        else:
+            return "SQLite file does not exist. <a href=/admin>Back to admin</a>"
+    except Exception as e:
+        return f"Error: {e}", 500
+
+
 @app.route("/admin/clear-data")
 def admin_clear_data():
     """Delete all study data — participants, responses, demographics."""
