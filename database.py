@@ -7,8 +7,9 @@ try:
     from psycopg2.extras import RealDictCursor
     POSTGRES = True
 except ImportError:
-    import sqlite3
     POSTGRES = False
+
+import sqlite3
 
 # SQLite fallback for local development
 SQLITE_PATH = os.path.join(os.path.dirname(__file__), "study.db")
@@ -24,21 +25,22 @@ STRATEGY_ORDERS = [
 
 
 def get_db():
-    """Return a database connection — PostgreSQL on Render, SQLite locally."""
+    """Return a database connection — always PostgreSQL if DATABASE_URL is set, SQLite only for local dev."""
     db_url = os.environ.get("DATABASE_URL")
-    if db_url and POSTGRES:
-        # Render provides postgres:// but psycopg2 needs postgresql://
+    if db_url:
+        if not POSTGRES:
+            raise RuntimeError("psycopg2 not installed but DATABASE_URL is set")
         db_url = db_url.replace("postgres://", "postgresql://", 1)
         conn = psycopg2.connect(db_url)
         return conn
-    else:
-        conn = sqlite3.connect(SQLITE_PATH)
-        conn.row_factory = sqlite3.Row
-        return conn
+    # Local development only
+    conn = sqlite3.connect(SQLITE_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 def is_postgres():
-    return bool(os.environ.get("DATABASE_URL")) and POSTGRES
+    return bool(os.environ.get("DATABASE_URL"))
 
 
 def placeholder(n=1):
