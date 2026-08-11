@@ -237,18 +237,20 @@ def save_demographics(participant_id, form_data):
             form_data.get("gender"),
             form_data.get("recommender_experience"),
             form_data.get("matrikelnummer") or None,
+            form_data.get("vp_name") or None,
             datetime.now().isoformat()
         )
         if is_postgres():
             cur.execute("""
                 INSERT INTO demographics
                 (participant_id, age, gender, recommender_experience,
-                 matrikelnummer, submitted_at)
-                VALUES (%s,%s,%s,%s,%s,%s)
+                 matrikelnummer, vp_name, submitted_at)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (participant_id) DO UPDATE
                 SET age=EXCLUDED.age, gender=EXCLUDED.gender,
                     recommender_experience=EXCLUDED.recommender_experience,
                     matrikelnummer=EXCLUDED.matrikelnummer,
+                    vp_name=EXCLUDED.vp_name,
                     submitted_at=EXCLUDED.submitted_at
             """, vals)
             cur.execute(
@@ -259,8 +261,8 @@ def save_demographics(participant_id, form_data):
             cur.execute("""
                 INSERT OR REPLACE INTO demographics
                 (participant_id, age, gender, recommender_experience,
-                 matrikelnummer, submitted_at)
-                VALUES (?,?,?,?,?,?)
+                 matrikelnummer, vp_name, submitted_at)
+                VALUES (?,?,?,?,?,?,?)
             """, vals)
             cur.execute(
                 "UPDATE participants SET completed=1 WHERE id=?",
