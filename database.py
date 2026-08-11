@@ -26,13 +26,22 @@ STRATEGY_ORDERS = [
 
 def get_db():
     """Return a database connection — always PostgreSQL if DATABASE_URL is set, SQLite only for local dev."""
+    import time
     db_url = os.environ.get("DATABASE_URL")
     if db_url:
         if not POSTGRES:
             raise RuntimeError("psycopg2 not installed but DATABASE_URL is set")
         db_url = db_url.replace("postgres://", "postgresql://", 1)
-        conn = psycopg2.connect(db_url)
-        return conn
+        # Retry up to 3 times in case PostgreSQL is not ready yet after sleep
+        for attempt in range(3):
+            try:
+                conn = psycopg2.connect(db_url, connect_timeout=10)
+                return conn
+            except Exception as e:
+                if attempt < 2:
+                    time.sleep(2)
+                else:
+                    raise e
     # Local development only
     conn = sqlite3.connect(SQLITE_PATH)
     conn.row_factory = sqlite3.Row
