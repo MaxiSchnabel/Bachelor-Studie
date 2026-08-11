@@ -77,10 +77,11 @@ def admin_export(token=None):
 
 @app.route("/admin/check-pw")
 def check_pw():
-    """Temporary debug route — remove after fixing password."""
     import os
-    pw = os.environ.get("ADMIN_PASSWORD", "NOT SET")
-    return f"ADMIN_PASSWORD is: {pw}"
+    pw  = os.environ.get("ADMIN_PASSWORD", "NOT SET")
+    db  = os.environ.get("DATABASE_URL", "NOT SET")
+    using = "PostgreSQL" if (db != "NOT SET" and "postgres" in db) else "SQLite"
+    return f"ADMIN_PASSWORD: {pw}<br>DATABASE_URL: {'SET (' + db[:30] + '...)' if db != 'NOT SET' else 'NOT SET'}<br>Using: <b>{using}</b>"
 
 
 @app.route("/admin/migrate")
