@@ -9,14 +9,6 @@ import os
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-regensburg-2024")
 
-@app.route("/debug-imports")
-def debug_imports():
-    import sys
-    mods = {k: str(v) for k, v in sys.modules.items() if 'psycopg' in k}
-    db_url = os.environ.get("DATABASE_URL", "NOT SET")
-    from database import POSTGRES
-    return f"POSTGRES={POSTGRES}<br>psycopg2={mods}<br>DATABASE_URL={'SET' if db_url != 'NOT SET' else 'NOT SET'}"
-
 # Admin password — set via environment variable in production
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin1234")
 
@@ -85,11 +77,10 @@ def admin_export(token=None):
 
 @app.route("/admin/check-pw")
 def check_pw():
+    """Temporary debug route — remove after fixing password."""
     import os
-    pw  = os.environ.get("ADMIN_PASSWORD", "NOT SET")
-    db  = os.environ.get("DATABASE_URL", "NOT SET")
-    using = "PostgreSQL" if (db != "NOT SET" and "postgres" in db) else "SQLite"
-    return f"ADMIN_PASSWORD: {pw}<br>DATABASE_URL: {'SET (' + db[:30] + '...)' if db != 'NOT SET' else 'NOT SET'}<br>Using: <b>{using}</b>"
+    pw = os.environ.get("ADMIN_PASSWORD", "NOT SET")
+    return f"ADMIN_PASSWORD is: {pw}"
 
 
 @app.route("/admin/migrate")
@@ -122,23 +113,6 @@ def admin_migrate():
 def admin_logout():
     session.pop("admin", None)
     return redirect(url_for("admin"))
-
-
-@app.route("/admin/delete-sqlite")
-def admin_delete_sqlite():
-    """Delete the local SQLite file so old data cannot be loaded."""
-    if not session.get("admin"):
-        return redirect(url_for("admin"))
-    import os
-    from database import SQLITE_PATH
-    try:
-        if os.path.exists(SQLITE_PATH):
-            os.remove(SQLITE_PATH)
-            return "SQLite file deleted. <a href=/admin>Back to admin</a>"
-        else:
-            return "SQLite file does not exist. <a href=/admin>Back to admin</a>"
-    except Exception as e:
-        return f"Error: {e}", 500
 
 
 @app.route("/admin/clear-data")
@@ -182,21 +156,22 @@ def admin_reset_db():
 
 @app.route("/")
 def index():
-    """Entry point — just show consent page, no participant created yet."""
-    session.clear()
-    return render_template("consent.html")
-
-
-@app.route("/consent", methods=["POST"])
-def consent():
-    """Create participant only when user actively agrees to consent."""
+    """Entry point — create participant, start session."""
     pid, order_index = create_participant()
+    session.clear()
     session["pid"]            = pid
     session["order_index"]    = order_index
     session["strategy_order"] = STRATEGY_ORDERS[order_index]
     session["current_round"]  = 0
     session["shown_recipes"]  = []
-    return redirect(url_for("dialogue"))
+    return redirect(url_for("consent"))
+
+
+@app.route("/consent")
+def consent():
+    if "pid" not in session:
+        return redirect(url_for("index"))
+    return render_template("consent.html")
 
 
 @app.route("/dialogue")
@@ -541,7 +516,9 @@ def get_recommendation():
         "recommendation.html",
         recipes=recipes,
         round_num=round_num + 1,
-        has_next=(round_num + 1 < 3)
+        has_next=(round_num + 1 < 3),
+        personas=PERSONAS,
+        session_pref=session.get("participant_pref", {})
     )
 
 
