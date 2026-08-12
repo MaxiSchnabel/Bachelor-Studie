@@ -9,6 +9,14 @@ import os
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-regensburg-2024")
 
+@app.route("/debug-imports")
+def debug_imports():
+    import sys
+    mods = {k: str(v) for k, v in sys.modules.items() if 'psycopg' in k}
+    db_url = os.environ.get("DATABASE_URL", "NOT SET")
+    from database import POSTGRES
+    return f"POSTGRES={POSTGRES}<br>psycopg2={mods}<br>DATABASE_URL={'SET' if db_url != 'NOT SET' else 'NOT SET'}"
+
 # Admin password — set via environment variable in production
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin1234")
 
