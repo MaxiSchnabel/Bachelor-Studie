@@ -48,7 +48,7 @@ def get_db():
 
 
 def is_postgres():
-    return bool(os.environ.get("DATABASE_URL"))
+    return bool(os.environ.get("DATABASE_URL")) and POSTGRES
 
 
 def placeholder(n=1):
