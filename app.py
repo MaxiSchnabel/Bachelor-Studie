@@ -154,23 +154,21 @@ def admin_reset_db():
 
 # ── Study flow ────────────────────────────────────────────────────────────────
 
-@app.route("/")
-def index():
-    """Entry point — create participant, start session."""
+@app.route("/consent", methods=["POST"])
+def consent():
+    """Create participant only when user actively agrees to consent."""
     pid, order_index = create_participant()
-    session.clear()
     session["pid"]            = pid
     session["order_index"]    = order_index
     session["strategy_order"] = STRATEGY_ORDERS[order_index]
     session["current_round"]  = 0
     session["shown_recipes"]  = []
-    return redirect(url_for("consent"))
+    return redirect(url_for("dialogue"))
 
-
-@app.route("/consent")
-def consent():
-    if "pid" not in session:
-        return redirect(url_for("index"))
+@app.route("/")
+def index():
+    """Entry point — just show consent page, no participant created yet."""
+    session.clear()
     return render_template("consent.html")
 
 
