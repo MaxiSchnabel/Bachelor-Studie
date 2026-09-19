@@ -1,0 +1,387 @@
+---
+title: "R Notebook - Bachelorarbeit Analyse"
+output: html_notebook
+---
+
+# 0. Setup
+
+```{r setup}
+# install.packages(c("lme4", "lmerTest", "emmeans", "psych", "tidyverse", "reformulas", "effectsize"))
+
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+library(effectsize)
+library(psych)
+```
+
+```{r r-version}
+R.version$version.string
+```
+
+# 1. Daten einlesen
+
+```{r read-data}
+df1 <- read.csv("C:/Users/maxis/OneDrive/Desktop/Bachelorarbeit/Study results/study_data.csv", stringsAsFactors = FALSE)
+df2 <- read.csv("C:/Users/maxis/OneDrive/Desktop/Bachelorarbeit/Study results/study_data(1).csv", stringsAsFactors = FALSE)
+df_raw <- bind_rows(df1, df2)
+```
+
+# 2. Datenqualitäts-Checks (vor Filterung)
+
+```{r check-duplicates}
+cat("--- Überschneidende participant_ids zwischen df1 und df2 ---\n")
+overlap_ids <- intersect(df1$participant_id, df2$participant_id)
+print(overlap_ids)
+cat("Anzahl überschneidender IDs:", length(overlap_ids), "\n")
+
+cat("\n--- Format von response_submitted_at ---\n")
+str(df_raw$response_submitted_at)
+```
+
+```{r check-raw-distributions}
+cat("--- Rohverteilung: Strategy (inkl. leerer Strings) ---\n")
+print(table(df_raw$strategy, useNA = "always"))
+
+cat("\n--- Rohverteilung: Dietary (inkl. leerer Strings) ---\n")
+print(table(df_raw$dietary, useNA = "always"))
+```
+
+```{r check-blanks-after-filter}
+cat("--- Blank-Check nach Basis-Filter (completed, round vorhanden) ---\n")
+df_raw %>%
+  filter(completed == 1, !is.na(round), round != "") %>%
+  summarise(
+    blank_strategy = sum(strategy == "", na.rm = TRUE),
+    blank_dietary  = sum(dietary == "", na.rm = TRUE)
+  ) %>%
+  print()
+```
+
+# 3. Unvollständige Teilnehmer identifizieren
+
+```{r incomplete-ids}
+# Participants mit weniger als 3 Runden finden
+incomplete_ids <- df_raw %>%
+  filter(completed == 1, !is.na(round), round != "") %>%
+  group_by(participant_id) %>%
+  summarise(n_rounds = n_distinct(round)) %>%
+  filter(n_rounds < 3) %>%
+  pull(participant_id)
+```
+
+# 4. Finaler Datensatz
+
+```{r build-df}
+df <- df_raw %>%
+  filter(completed == 1,
+         !participant_id %in% incomplete_ids,
+         !is.na(round),
+         round != "") %>%
+  arrange(participant_id, round, response_submitted_at) %>%
+  distinct(participant_id, round, .keep_all = TRUE) %>%
+  mutate(
+    # Convert to numeric
+    fair_1   = as.numeric(fair_1),
+    fair_2   = as.numeric(fair_2),
+    fair_3   = as.numeric(fair_3),
+    sat_1    = as.numeric(sat_1),
+    sat_2    = as.numeric(sat_2),
+    sat_3    = as.numeric(sat_3),
+    sat_4    = as.numeric(sat_4),
+    appeal_1 = as.numeric(appeal_1),
+    appeal_2 = as.numeric(appeal_2),
+    round    = as.numeric(round),
+    age      = as.numeric(age),
+
+    # Composite scores
+    fairness     = rowMeans(select(., fair_1, fair_2, fair_3)),
+    satisfaction = rowMeans(select(., sat_1, sat_2, sat_3, sat_4)),
+    appeal       = rowMeans(select(., appeal_1, appeal_2)),
+
+    # Factors
+    strategy = factor(strategy,
+                       levels = c("additive", "least_misery", "majority_voting"),
+                       labels = c("Additive", "Least Misery", "Majority Voting")),
+    dietary  = factor(dietary,
+                       levels = c("omnivore", "vegetarian", "vegan")),
+    participant_id = factor(participant_id)
+  )
+
+cat("N participants:", n_distinct(df$participant_id), "\n")
+cat("N response rows:", nrow(df), "\n")
+```
+
+# 5. Datenqualitäts-Checks (nach Filterung)
+
+```{r check-na-composites}
+cat("--- NA-Check: Composite Score Items ---\n")
+df %>%
+  select(fair_1, fair_2, fair_3, sat_1, sat_2, sat_3, sat_4, appeal_1, appeal_2) %>%
+  summarise(across(everything(), ~sum(is.na(.)))) %>%
+  print()
+
+cat("\n--- NA-Check: Composite Scores selbst ---\n")
+cat("NA in fairness:", sum(is.na(df$fairness)), "\n")
+cat("NA in satisfaction:", sum(is.na(df$satisfaction)), "\n")
+cat("NA in appeal:", sum(is.na(df$appeal)), "\n")
+```
+
+```{r check-group-sizes}
+cat("--- Gruppengrößen: Strategy ---\n")
+print(table(df$strategy, useNA = "always"))
+
+cat("\n--- Gruppengrößen: Dietary ---\n")
+print(table(df$dietary, useNA = "always"))
+
+cat("\n--- Gruppengrößen: Latin Square Order ---\n")
+print(table(df$order_index, useNA = "always"))
+
+cat("\n--- Kreuztabelle: Strategy x Dietary ---\n")
+print(table(df$strategy, df$dietary))
+```
+
+# 6. Demographics & deskriptive Statistik
+
+```{r demographics}
+demo <- df %>% distinct(participant_id, .keep_all = TRUE)
+
+cat("Age: M =", round(mean(demo$age, na.rm = TRUE), 1),
+    ", SD =", round(sd(demo$age, na.rm = TRUE), 1),
+    ", Range:", min(demo$age, na.rm = TRUE), "-", max(demo$age, na.rm = TRUE), "\n")
+
+cat("Gender:\n"); print(table(demo$gender))
+cat("Dietary:\n"); print(table(demo$dietary))
+cat("Experience:\n"); print(table(demo$recommender_experience))
+cat("Latin Square orders:\n"); print(table(demo$order_index))
+```
+
+```{r descriptives-per-strategy}
+cat("--- Fairness per strategy ---\n")
+df %>% group_by(strategy) %>%
+  summarise(M = round(mean(fairness), 2), SD = round(sd(fairness), 2)) %>%
+  print()
+
+cat("\n--- Satisfaction per strategy ---\n")
+df %>% group_by(strategy) %>%
+  summarise(M = round(mean(satisfaction), 2), SD = round(sd(satisfaction), 2)) %>%
+  print()
+
+cat("\n--- Recipe Appeal per strategy ---\n")
+df %>% group_by(strategy) %>%
+  summarise(M = round(mean(appeal), 2), SD = round(sd(appeal), 2)) %>%
+  print()
+```
+
+# 7. Cronbach's Alpha
+
+```{r cronbach-alpha}
+cat("=== CRONBACH'S ALPHA ===\n\n")
+
+cat("Fairness (3 items):\n")
+alpha_fair <- psych::alpha(df %>% select(fair_1, fair_2, fair_3))
+cat("alpha =", round(alpha_fair$total$raw_alpha, 3), "\n\n")
+
+cat("Satisfaction (4 items):\n")
+alpha_sat <- psych::alpha(df %>% select(sat_1, sat_2, sat_3, sat_4))
+cat("alpha =", round(alpha_sat$total$raw_alpha, 3), "\n\n")
+
+cat("Recipe Appeal (2 items):\n")
+alpha_appeal <- psych::alpha(df %>% select(appeal_1, appeal_2))
+cat("alpha =", round(alpha_appeal$total$raw_alpha, 3), "\n\n")
+```
+
+# 8. Primary Analysis: LME Models
+
+```{r primary-models}
+cat("=== PRIMARY ANALYSIS ===\n\n")
+
+# Model 1: Fairness
+cat("--- Model 1: Fairness ---\n")
+m_fair <- lmer(fairness ~ strategy + (1 | participant_id), data = df, REML = FALSE)
+print(anova(m_fair, type = 3))
+cat("\nEffect size (partial eta squared):\n")
+print(eta_squared(m_fair, partial = TRUE))
+
+# Model 2: Satisfaction
+cat("\n--- Model 2: Satisfaction ---\n")
+m_sat <- lmer(satisfaction ~ strategy + (1 | participant_id), data = df, REML = FALSE)
+print(anova(m_sat, type = 3))
+cat("\nEffect size (partial eta squared):\n")
+print(eta_squared(m_sat, partial = TRUE))
+```
+
+# 9. Post-hoc Comparisons
+
+```{r posthoc}
+cat("=== POST-HOC COMPARISONS ===\n\n")
+
+cat("--- Fairness post-hoc (Holm) ---\n")
+emm_fair <- emmeans(m_fair, ~ strategy)
+print(pairs(emm_fair, adjust = "holm"))
+
+cat("\n--- Satisfaction post-hoc (Holm) ---\n")
+emm_sat <- emmeans(m_sat, ~ strategy)
+print(pairs(emm_sat, adjust = "holm"))
+```
+
+# 10. Control Variable: Recipe Appeal
+
+```{r control-appeal}
+cat("=== RECIPE APPEAL (Control Variable) ===\n\n")
+m_appeal <- lmer(appeal ~ strategy + (1 | participant_id), data = df, REML = FALSE)
+print(anova(m_appeal, type = 3))
+```
+
+# 11. Exploratory: Dietary Preference
+
+```{r exploratory-dietary-main}
+cat("=== EXPLORATORY: DIETARY PREFERENCE ===\n\n")
+
+cat("--- Fairness + Dietary ---\n")
+m_fair_diet <- lmer(fairness ~ strategy + dietary + (1 | participant_id), data = df, REML = FALSE)
+print(anova(m_fair_diet, type = 3))
+
+cat("\n--- Satisfaction + Dietary ---\n")
+m_sat_diet <- lmer(satisfaction ~ strategy + dietary + (1 | participant_id), data = df, REML = FALSE)
+print(anova(m_sat_diet, type = 3))
+```
+
+```{r exploratory-interaction}
+# Hinweis: vegane Zellgröße ist klein (n = 6 Personen) -> Interaktion mit Vorsicht interpretieren
+m_sat_interact <- lmer(satisfaction ~ strategy * dietary + (1 | participant_id),
+                        data = df, REML = FALSE)
+print(anova(m_sat_interact, type = 3))
+```
+
+```{r exploratory-dietary-posthoc}
+emm_diet <- emmeans(m_sat_diet, ~ dietary)
+print(pairs(emm_diet, adjust = "holm"))
+```
+
+```{r exploratory-dietary-descriptives}
+df %>% group_by(dietary) %>%
+  summarise(M = round(mean(satisfaction), 2),
+            SD = round(sd(satisfaction), 2),
+            n = n())
+```
+
+```{r exploratory-interaction-plot}
+emmip(m_sat_interact, dietary ~ strategy,
+      CIs = TRUE) +
+  labs(title = "Satisfaction by Strategy and Dietary Preference",
+       x = "Strategy", y = "Estimated Satisfaction")
+```
+
+# 12. Summary Table
+
+```{r summary-table}
+cat("=== SUMMARY: Means & SDs per Strategy ===\n\n")
+df %>%
+  group_by(strategy) %>%
+  summarise(
+    Fairness_M  = round(mean(fairness), 2),
+    Fairness_SD = round(sd(fairness), 2),
+    Sat_M       = round(mean(satisfaction), 2),
+    Sat_SD      = round(sd(satisfaction), 2),
+    Appeal_M    = round(mean(appeal), 2),
+    Appeal_SD   = round(sd(appeal), 2),
+    n           = n()
+  ) %>% print()
+```
+
+# 13. Alle Ergebnisse zusammengefasst
+
+```{r all-results}
+print(anova(m_fair, type = 3))
+print(anova(m_sat, type = 3))
+print(pairs(emm_fair, adjust = "holm"))
+print(pairs(emm_sat, adjust = "holm"))
+print(anova(m_appeal, type = 3))
+print(anova(m_fair_diet, type = 3))
+print(anova(m_sat_diet, type = 3))
+print(anova(m_sat_interact, type = 3))
+print(pairs(emm_diet, adjust = "holm"))
+```
+
+```{r}
+# ── Boxplots: Fairness & Satisfaction nach Aggregationsstrategie ──────
+# Fügt diesen Chunk nach deinem "descriptives-per-strategy"-Chunk ein
+
+library(ggplot2)
+
+# Optional: feste Farbpalette, damit beide Plots konsistent aussehen
+strategy_colors <- c("Additive" = "#4C72B0",
+                     "Least Misery" = "#DD8452",
+                     "Majority Voting" = "#55A868")
+
+# --- Plot 1: Fairness ---
+p_fairness <- ggplot(df, aes(x = strategy, y = fairness, fill = strategy)) +
+  geom_boxplot(alpha = 0.7, outlier.shape = NA, width = 0.5) +
+  geom_jitter(width = 0.08, height = 0, alpha = 0.35, size = 1.8, color = "black") +
+  scale_fill_manual(values = strategy_colors) +
+  scale_y_continuous(limits = c(1, 5), breaks = 1:5) +
+  labs(
+    title = "Perceived Fairness by Aggregation Strategy",
+    x = "Aggregation Strategy",
+    y = "Perceived Fairness (1-5)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none")
+
+print(p_fairness)
+
+# --- Plot 2: Satisfaction ---
+p_satisfaction <- ggplot(df, aes(x = strategy, y = satisfaction, fill = strategy)) +
+  geom_boxplot(alpha = 0.7, outlier.shape = NA, width = 0.5) +
+  geom_jitter(width = 0.08, height = 0, alpha = 0.35, size = 1.8, color = "black") +
+  scale_fill_manual(values = strategy_colors) +
+  scale_y_continuous(limits = c(1, 5), breaks = 1:5) +
+  labs(
+    title = "Satisfaction by Aggregation Strategy",
+    x = "Aggregation Strategy",
+    y = "Satisfaction (1-5)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none")
+
+print(p_satisfaction)
+
+# --- Optional: als PNG/PDF für die Thesis exportieren ---
+# ggsave("fairness_by_strategy.png", p_fairness, width = 6, height = 4.5, dpi = 300)
+# ggsave("satisfaction_by_strategy.png", p_satisfaction, width = 6, height = 4.5, dpi = 300)
+# Für LaTeX empfiehlt sich PDF statt PNG (verlustfrei, skaliert sauber):
+# ggsave("fairness_by_strategy.pdf", p_fairness, width = 6, height = 4.5)
+# ggsave("satisfaction_by_strategy.pdf", p_satisfaction, width = 6, height = 4.5)
+```
+
+```{r}
+# ── Boxplot: Satisfaction nach Dietary Preference ─────────────────────
+# Fügt diesen Chunk in deinen "Exploratory: Dietary Preference"-Abschnitt ein,
+# am besten direkt nach dem deskriptiven Tabellen-Chunk (M/SD/n pro dietary)
+
+library(ggplot2)
+
+dietary_colors <- c("omnivore" = "#8172B2",
+                    "vegetarian" = "#64B5CD",
+                    "vegan" = "#8C9C3A")
+
+p_dietary <- ggplot(df, aes(x = dietary, y = satisfaction, fill = dietary)) +
+  geom_boxplot(alpha = 0.7, outlier.shape = NA, width = 0.5) +
+  geom_jitter(width = 0.08, height = 0, alpha = 0.35, size = 1.8, color = "black") +
+  scale_fill_manual(values = dietary_colors) +
+  scale_y_continuous(limits = c(1, 5), breaks = 1:5) +
+  labs(
+    title = "Satisfaction by Dietary Preference",
+    x = "Dietary Preference",
+    y = "Satisfaction (1-5)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none")
+
+print(p_dietary)
+
+# Export für LaTeX:
+# ggsave("satisfaction_by_dietary.pdf", p_dietary, width = 6, height = 4.5)
+```
