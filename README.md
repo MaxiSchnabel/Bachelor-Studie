@@ -15,4 +15,5 @@ Supervisor: Prof. Dr. David Elsweiler
 
 ## Setup
 install: pip install -r requirements.txt
+
 start: python app.py
